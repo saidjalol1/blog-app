@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Logo - Modern Blog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #0ea5e9, #3b82f6);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #0284c7, #2563eb);
+        }
+        
+        /* Firefox */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #0ea5e9 #f1f5f9;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            background-color: #f8fafc;
+        }
+        
+        /* Color Theme */
+        :root {
+            --primary: #0ea5e9;
+            --primary-light: #e0f2fe;
+            --primary-dark: #0284c7;
+            --secondary: #64748b;
+            --accent: #3b82f6;
+        }
+        
+        .navbar {
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.1);
+        }
+        
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .scroll-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .card-hover {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(14, 165, 233, 0.2);
+        }
+        
+        .gradient-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+        }
+        
+        .tag {
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        
+        .tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.15);
+            border-color: var(--primary);
+        }
+        
+        .logo-icon {
+            background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        /* Modern card shapes */
+        .modern-card {
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .modern-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(14, 165, 233, 0.05), transparent);
+            transform: rotate(45deg);
+            z-index: 0;
+            transition: all 0.6s ease;
+        }
+        
+        .modern-card:hover::before {
+            transform: rotate(45deg) translate(10px, 10px);
+        }
+        
+        .modern-card-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Asymmetric card */
+        .asymmetric-card {
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 95% 100%, 0 100%);
+        }
+        
+        /* Diamond card */
+        .diamond-card {
+            clip-path: polygon(0 10%, 10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%);
+        }
+        
+        /* Wave card */
+        .wave-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .wave-card::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z' fill='%23ffffff'%3E%3C/path%3E%3C/svg%3E");
+            background-size: 1200px 100%;
+        }
+        
+        /* Language selector */
+        .language-selector {
+            position: relative;
+        }
+        
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 8px;
+            min-width: 120px;
+            display: none;
+            z-index: 100;
+        }
+        
+        .language-dropdown.active {
+            display: block;
+        }
+        
+        .language-option {
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .language-option:hover {
+            background-color: #f1f5f9;
+        }
+        
+        .language-option.active {
+            background-color: #e0f2fe;
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+        
+        /* Mobile menu */
+        .mobile-menu {
+            position: fixed;
+            top: 64px;
+            left: 0;
+            width: 100%;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 20px;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 40;
+        }
+        
+        .mobile-menu.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        /* Responsive text sizes */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 1.75rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .article-title {
+                font-size: 1.25rem;
+            }
+            
+            .card-title {
+                font-size: 1.125rem;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .hero-title {
+                font-size: 1.5rem;
+            }
+            
+            .section-title {
+                font-size: 1.25rem;
+            }
+            
+            .article-title {
+                font-size: 1.125rem;
+            }
+            
+            .card-title {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50">
+    
+    <!-- Navbar -->
+    <nav class="navbar fixed top-0 w-full z-50 bg-white border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-2">
+                    <div class="logo-icon w-8 h-8 rounded-lg flex items-center justify-center">
+                        <i class="bi bi-grid-3x3-gap-fill text-white"></i>
+                    </div>
+                    <span class="text-xl font-bold text-slate-800">MY LOGO</span>
+                </div>
+                
+                <!-- Search Bar -->
+                <div class="hidden md:flex flex-1 max-w-md mx-8">
+                    <div class="relative w-full">
+                        <input type="text" placeholder="Search articles..." class="w-full px-4 py-2 pl-10 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <i class="bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                    </div>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="hidden lg:flex items-center space-x-6">
+                    <a href="#" class="text-slate-700 hover:text-blue-600 transition font-medium">Articles</a>
+                    <a href="#" class="text-slate-700 hover:text-blue-600 transition font-medium">About Us</a>
+                    <a href="#" class="text-slate-700 hover:text-blue-600 transition font-medium">Contact</a>
+                    
+                    <!-- Language Selector -->
+                    <div class="language-selector">
+                        <button id="languageToggle" class="text-slate-700 hover:text-blue-600 transition font-medium flex items-center">
+                            <i class="bi bi-translate mr-1"></i> EN <i class="bi bi-chevron-down ml-1"></i>
+                        </button>
+                        <div id="languageDropdown" class="language-dropdown">
+                            <div class="language-option active" data-lang="en">English</div>
+                            <div class="language-option" data-lang="uz">O'zbekcha</div>
+                            <div class="language-option" data-lang="ru">Русский</div>
+                        </div>
+                    </div>
+                    
+                    <button class="px-5 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium shadow-md hover:shadow-lg">Sign In</button>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuToggle" class="lg:hidden text-slate-700">
+                    <i class="bi bi-list text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="mobile-menu lg:hidden">
+            <div class="flex flex-col space-y-4">
+                <a href="#" class="text-slate-700 hover:text-blue-600 text-lg font-medium py-2">Articles</a>
+                <a href="#" class="text-slate-700 hover:text-blue-600 text-lg font-medium py-2">About Us</a>
+                <a href="#" class="text-slate-700 hover:text-blue-600 text-lg font-medium py-2">Contact</a>
+                
+                <!-- Mobile Language Selector -->
+                <div class="pt-4 border-t border-slate-100">
+                    <p class="font-semibold text-slate-800 mb-2">Language:</p>
+                    <div class="flex space-x-3">
+                        <button class="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg font-medium text-sm">English</button>
+                        <button class="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg font-medium text-sm">O'zbekcha</button>
+                        <button class="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg font-medium text-sm">Русский</button>
+                    </div>
+                </div>
+                
+                <div class="pt-4">
+                    <button class="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium">Sign In</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-28 pb-12 px-2">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="section-title text-3xl font-bold text-slate-800 flex items-center scroll-reveal">
+                    <span class="w-1 h-8 bg-blue-500 mr-3 rounded-full"></span>
+                    Top🔥
+                </h2>
+                <a href="#" class="md:mt-0 flex items-center text-blue-600 hover:text-blue-700 font-semibold">
+                    View All Articles <i class="bi bi-arrow-right ml-2"></i>
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Featured Article - Asymmetric Card -->
+                <div class="scroll-reveal lg:col-span-2">
+                    <div class="modern-card asymmetric-card card-hover relative h-full overflow-hidden cursor-pointer group">
+                        <img src="https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=800" alt="Article" class="w-full h-96 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent"></div>
+                        <div class="absolute bottom-0 p-8 text-white modern-card-content">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <span class="flex items-center text-sm bg-blue-500/20 backdrop-blur-sm px-3 py-1 rounded-full"><i class="bi bi-eye mr-1"></i> 2.5k</span>
+                                <span class="flex items-center text-sm bg-slate-800/40 backdrop-blur-sm px-3 py-1 rounded-full"><i class="bi bi-calendar mr-1"></i> Jan 23, 2025</span>
+                            </div>
+                            <h3 class="text-3xl font-bold mb-3 group-hover:text-blue-300 transition">Mind Blowing Travel Destinations You Need to Visit</h3>
+                            <p class="text-sm opacity-90">By Saidjafar Turg'unboev</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Small Articles -->
+                <div class="scroll-reveal flex flex-col space-y-6">
+                    <div class="modern-card wave-card card-hover relative h-56 overflow-hidden cursor-pointer group">
+                        <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600" alt="Article" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent"></div>
+                        <div class="absolute bottom-0 p-6 text-white modern-card-content">
+                            <div class="flex items-center space-x-4 mb-2 text-sm">
+                                <span class="flex items-center"><i class="bi bi-eye mr-1"></i> 1.4k</span>
+                                <span class="flex items-center"><i class="bi bi-calendar mr-1"></i> Jan 22, 2025</span>
+                            </div>
+                            <h3 class="article-title text-xl font-bold group-hover:text-blue-300 transition">The Future of Sustainable Energy</h3>
+                            <p class="text-xs opacity-90 mt-2">By Sarah Williams</p>
+                        </div>
+                    </div>
+                    
+                    <div class="modern-card diamond-card card-hover relative h-56 overflow-hidden cursor-pointer group">
+                        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600" alt="Article" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent"></div>
+                        <div class="absolute bottom-0 p-6 text-white modern-card-content">
+                            <div class="flex items-center space-x-4 mb-2 text-sm">
+                                <span class="flex items-center"><i class="bi bi-eye mr-1"></i> 1.2k</span>
+                                <span class="flex items-center"><i class="bi bi-calendar mr-1"></i> Jan 21, 2025</span>
+                            </div>
+                            <h3 class="article-title text-xl font-bold group-hover:text-blue-300 transition">The Future of Technology and Innovation</h3>
+                            <p class="text-xs opacity-90 mt-2">By Alex Johnson</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section with Background Images -->
+    <section class="py-16 px-4 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="section-title text-3xl font-bold text-slate-800 mb-10 flex items-center scroll-reveal">
+                <span class="w-1 h-8 bg-blue-500 mr-3 rounded-full"></span>
+               Mavzular 💡
+            </h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <div class="category-card scroll-reveal modern-card h-40 rounded-2xl overflow-hidden cursor-pointer transform hover:scale-[1.03] transition-all duration-300 relative group" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400'); background-size: cover; background-position: center;">
+                    <div class="absolute inset-0 bg-gradient-to-t from-blue-900/80 to-blue-500/40"></div>
+                    <div class="absolute bottom-0 p-5 text-white z-10 w-full">
+                        <i class="bi bi-code-slash text-3xl mb-2 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="card-title font-bold text-lg">Technology</h3>
+                        <p class="text-sm opacity-90">124 articles</p>
+                    </div>
+                </div>
+                
+                <div class="category-card scroll-reveal modern-card h-40 rounded-2xl overflow-hidden cursor-pointer transform hover:scale-[1.03] transition-all duration-300 relative group" style="background-image: url('https://images.unsplash.com/photo-1561070791-2526d30994b5?w-400'); background-size: cover; background-position: center;">
+                    <div class="absolute inset-0 bg-gradient-to-t from-pink-900/80 to-pink-500/40"></div>
+                    <div class="absolute bottom-0 p-5 text-white z-10 w-full">
+                        <i class="bi bi-palette text-3xl mb-2 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="card-title font-bold text-lg">Design</h3>
+                        <p class="text-sm opacity-90">89 articles</p>
+                    </div>
+                </div>
+                
+                <div class="category-card scroll-reveal modern-card h-40 rounded-2xl overflow-hidden cursor-pointer transform hover:scale-[1.03] transition-all duration-300 relative group" style="background-image: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?w-400'); background-size: cover; background-position: center;">
+                    <div class="absolute inset-0 bg-gradient-to-t from-blue-900/80 to-blue-500/40"></div>
+                    <div class="absolute bottom-0 p-5 text-white z-10 w-full">
+                        <i class="bi bi-briefcase text-3xl mb-2 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="card-title font-bold text-lg">Business</h3>
+                        <p class="text-sm opacity-90">156 articles</p>
+                    </div>
+                </div>
+                
+                <div class="category-card scroll-reveal modern-card h-40 rounded-2xl overflow-hidden cursor-pointer transform hover:scale-[1.03] transition-all duration-300 relative group" style="background-image: url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w-400'); background-size: cover; background-position: center;">
+                    <div class="absolute inset-0 bg-gradient-to-t from-green-900/80 to-green-500/40"></div>
+                    <div class="absolute bottom-0 p-5 text-white z-10 w-full">
+                        <i class="bi bi-heart-pulse text-3xl mb-2 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="card-title font-bold text-lg">Health</h3>
+                        <p class="text-sm opacity-90">98 articles</p>
+                    </div>
+                </div>
+                
+                <div class="category-card scroll-reveal modern-card h-40 rounded-2xl overflow-hidden cursor-pointer transform hover:scale-[1.03] transition-all duration-300 relative group" style="background-image: url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w-400'); background-size: cover; background-position: center;">
+                    <div class="absolute inset-0 bg-gradient-to-t from-orange-900/80 to-orange-500/40"></div>
+                    <div class="absolute bottom-0 p-5 text-white z-10 w-full">
+                        <i class="bi bi-airplane text-3xl mb-2 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="card-title font-bold text-lg">Travel</h3>
+                        <p class="text-sm opacity-90">67 articles</p>
+                    </div>
+                </div>
+                
+                <div class="category-card scroll-reveal modern-card h-40 rounded-2xl overflow-hidden cursor-pointer transform hover:scale-[1.03] transition-all duration-300 relative group" style="background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w-400'); background-size: cover; background-position: center;">
+                    <div class="absolute inset-0 bg-gradient-to-t from-indigo-900/80 to-indigo-500/40"></div>
+                    <div class="absolute bottom-0 p-5 text-white z-10 w-full">
+                        <i class="bi bi-book text-3xl mb-2 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="card-title font-bold text-lg">Education</h3>
+                        <p class="text-sm opacity-90">143 articles</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular posts Section - Professional Look -->
+    <section class="py-20 px-4 bg-gradient-to-br from-slate-50 to-blue-50/30">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex justify-between items-center md:items-center mb-12 scroll-reveal">
+               
+                    <h2 class="section-title text-3xl font-bold text-slate-800 flex items-center scroll-reveal">
+                        <span class="w-1 h-8 bg-blue-500 mr-3 rounded-full"></span>
+                        So'ngi maqolalar ✍️
+                    </h2>
+                    <a href="#" class="md:mt-0 flex items-center text-blue-600 hover:text-blue-700 font-semibold">
+                        View All Articles <i class="bi bi-arrow-right ml-2"></i>
+                    </a>
+              
+            </div>
+            
+            <!-- Articles Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Article 1 -->
+                <div class="scroll-reveal modern-card card-hover bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-slate-100">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800" alt="Article" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-blue-500 text-white text-xs font-medium rounded-full">TECHNOLOGY</span>
+                        </div>
+                        <div class="absolute bottom-4 right-4">
+                            <button class="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition">
+                                <i class="bi bi-bookmark text-blue-600"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-4 text-sm text-slate-500">
+                                <span class="flex items-center"><i class="bi bi-calendar mr-1"></i> Jan 24, 2025</span>
+                                <span class="flex items-center"><i class="bi bi-clock mr-1"></i> 5 min read</span>
+                            </div>
+                            <span class="flex items-center text-sm text-slate-500"><i class="bi bi-eye mr-1"></i> 845</span>
+                        </div>
+                        <h3 class="article-title text-xl font-bold text-slate-800 mb-3 hover:text-blue-600 transition cursor-pointer">The Rise of Quantum Computing: What You Need to Know</h3>
+                        <p class="text-slate-600 mb-6">Exploring the fundamentals of quantum computing and its potential impact on various industries in the coming decade.</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold mr-3">MJ</div>
+                                <div>
+                                    <p class="font-medium text-slate-800">Michael Johnson</p>
+                                    <p class="text-xs text-slate-500">Senior Tech Writer</p>
+                                </div>
+                            </div>
+                            <button class="text-blue-600 hover:text-blue-700 font-medium flex items-center group">
+                                Read More <i class="bi bi-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Article 2 -->
+                <div class="scroll-reveal modern-card card-hover bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-slate-100">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800" alt="Article" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-emerald-500 text-white text-xs font-medium rounded-full">BUSINESS</span>
+                        </div>
+                        <div class="absolute bottom-4 right-4">
+                            <button class="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition">
+                                <i class="bi bi-bookmark text-blue-600"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-4 text-sm text-slate-500">
+                                <span class="flex items-center"><i class="bi bi-calendar mr-1"></i> Jan 23, 2025</span>
+                                <span class="flex items-center"><i class="bi bi-clock mr-1"></i> 7 min read</span>
+                            </div>
+                            <span class="flex items-center text-sm text-slate-500"><i class="bi bi-eye mr-1"></i> 1.2k</span>
+                        </div>
+                        <h3 class="article-title text-xl font-bold text-slate-800 mb-3 hover:text-blue-600 transition cursor-pointer">Building Remote-First Companies in 2025</h3>
+                        <p class="text-slate-600 mb-6">Strategies and tools for creating successful distributed teams and maintaining company culture across time zones.</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600 flex items-center justify-center text-white font-bold mr-3">SL</div>
+                                <div>
+                                    <p class="font-medium text-slate-800">Samantha Lee</p>
+                                    <p class="text-xs text-slate-500">Business Strategist</p>
+                                </div>
+                            </div>
+                            <button class="text-blue-600 hover:text-blue-700 font-medium flex items-center group">
+                                Read More <i class="bi bi-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Article 3 -->
+                <div class="scroll-reveal modern-card card-hover bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-slate-100">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800" alt="Article" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-violet-500 text-white text-xs font-medium rounded-full">DESIGN</span>
+                        </div>
+                        <div class="absolute bottom-4 right-4">
+                            <button class="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition">
+                                <i class="bi bi-bookmark text-blue-600"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-4 text-sm text-slate-500">
+                                <span class="flex items-center"><i class="bi bi-calendar mr-1"></i> Jan 22, 2025</span>
+                                <span class="flex items-center"><i class="bi bi-clock mr-1"></i> 6 min read</span>
+                            </div>
+                            <span class="flex items-center text-sm text-slate-500"><i class="bi bi-eye mr-1"></i> 956</span>
+                        </div>
+                        <h3 class="article-title text-xl font-bold text-slate-800 mb-3 hover:text-blue-600 transition cursor-pointer">Minimalist Design Principles for Modern Websites</h3>
+                        <p class="text-slate-600 mb-6">How to apply minimalist design principles to create clean, functional, and aesthetically pleasing web interfaces.</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-violet-400 to-violet-600 flex items-center justify-center text-white font-bold mr-3">DR</div>
+                                <div>
+                                    <p class="font-medium text-slate-800">David Rivera</p>
+                                    <p class="text-xs text-slate-500">UI/UX Designer</p>
+                                </div>
+                            </div>
+                            <button class="text-blue-600 hover:text-blue-700 font-medium flex items-center group">
+                                Read More <i class="bi bi-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Newsletter Section -->
+    <section class="py-20 px-4 bg-gradient-to-br from-blue-50 via-white to-blue-50/50">
+        <div class="max-w-4xl mx-auto">
+            <div class="modern-card bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl border border-blue-100/50 overflow-hidden">
+                <div class="grid md:grid-cols-2">
+                    <div class="p-10 md:p-12 flex flex-col justify-center">
+                        <h2 class="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
+                            Stay Updated
+                        </h2>
+                        <p class="text-slate-600 mb-8">Subscribe to our newsletter and receive the latest articles, tutorials, and insights directly in your inbox.</p>
+                        
+                        <form class="space-y-4">
+                            <div class="relative">
+                                <input type="email" placeholder="Your email address" class="w-full px-5 py-4 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+                                <i class="bi bi-envelope absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                            </div>
+                            <button type="submit" class="w-full py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg">
+                                Subscribe Now
+                            </button>
+                        </form>
+                        
+                        <p class="text-sm text-slate-500 mt-6">
+                            <i class="bi bi-shield-check text-blue-500 mr-2"></i>
+                            We respect your privacy. Unsubscribe at any time.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-10 md:p-12 flex flex-col justify-center items-center text-white relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full transform translate-x-16 -translate-y-16"></div>
+                        <div class="absolute bottom-0 left-0 w-40 h-40 bg-white/10 rounded-full transform -translate-x-20 translate-y-20"></div>
+                        
+                        <div class="relative z-10 text-center">
+                            <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                <i class="bi bi-envelope-paper text-4xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-4">Join 15,000+ Readers</h3>
+                            <p class="opacity-90 mb-8">Weekly curated content from industry experts</p>
+                            <div class="flex items-center justify-center space-x-6">
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold">100+</div>
+                                    <div class="text-sm opacity-90">New Articles</div>
+                                </div>
+                                <div class="h-12 w-px bg-white/30"></div>
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold">25+</div>
+                                    <div class="text-sm opacity-90">Expert Writers</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-white pt-16 pb-8 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+                <!-- Company Info -->
+                <div>
+                    <div class="flex items-center space-x-2 mb-6">
+                        <div class="logo-icon w-8 h-8 rounded-lg flex items-center justify-center">
+                            <i class="bi bi-grid-3x3-gap-fill text-white"></i>
+                        </div>
+                        <span class="text-xl font-bold">MY LOGO</span>
+                    </div>
+                    <p class="text-slate-400 mb-8">A modern blog platform delivering quality content on technology, business, design, and lifestyle.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-blue-600 rounded-lg flex items-center justify-center transition">
+                            <i class="bi bi-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-blue-700 rounded-lg flex items-center justify-center transition">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-pink-600 rounded-lg flex items-center justify-center transition">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-slate-800 hover:bg-blue-800 rounded-lg flex items-center justify-center transition">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-lg font-bold mb-6">Quick Links</h3>
+                    <ul class="space-y-4">
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Home</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Articles</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Categories</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">About Us</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Categories -->
+                <div>
+                    <h3 class="text-lg font-bold mb-6">Top Categories</h3>
+                    <ul class="space-y-4">
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Technology</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Business</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Design</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Health & Wellness</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Travel</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Contact -->
+                <div>
+                    <h3 class="text-lg font-bold mb-6">Contact Us</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-center text-slate-400">
+                            <i class="bi bi-envelope mr-3"></i>
+                            <span>info@mylogo.com</span>
+                        </li>
+                        <li class="flex items-center text-slate-400">
+                            <i class="bi bi-telephone mr-3"></i>
+                            <span>+1 (555) 123-4567</span>
+                        </li>
+                        <li class="flex items-start text-slate-400">
+                            <i class="bi bi-geo-alt mr-3 mt-1"></i>
+                            <span>123 Innovation Street<br>San Francisco, CA 94107</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Bottom Bar -->
+            <div class="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-slate-500 text-sm mb-4 md:mb-0">
+                    &copy; 2025 My Logo Blog. All rights reserved.
+                </p>
+                <div class="flex space-x-6 text-sm text-slate-500">
+                    <a href="#" class="hover:text-white transition">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition">Terms of Service</a>
+                    <a href="#" class="hover:text-white transition">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        mobileMenuToggle.addEventListener('click', function() {
+            mobileMenu.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            if (mobileMenu.classList.contains('active')) {
+                icon.classList.remove('bi-list');
+                icon.classList.add('bi-x');
+            } else {
+                icon.classList.remove('bi-x');
+                icon.classList.add('bi-list');
+            }
+        });
+
+        // Language selector
+        const languageToggle = document.getElementById('languageToggle');
+        const languageDropdown = document.getElementById('languageDropdown');
+        
+        languageToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            languageDropdown.classList.toggle('active');
+        });
+
+        // Close language dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!languageToggle.contains(e.target) && !languageDropdown.contains(e.target)) {
+                languageDropdown.classList.remove('active');
+            }
+        });
+
+        // Language selection
+        const languageOptions = document.querySelectorAll('.language-option');
+        languageOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const lang = this.getAttribute('data-lang');
+                
+                // Remove active class from all options
+                languageOptions.forEach(opt => opt.classList.remove('active'));
+                
+                // Add active class to selected option
+                this.classList.add('active');
+                
+                // Update button text
+                const buttonText = languageToggle.querySelector('span') || document.createElement('span');
+                buttonText.textContent = lang.toUpperCase();
+                languageToggle.innerHTML = '<i class="bi bi-translate mr-1"></i> ' + buttonText.outerHTML + ' <i class="bi bi-chevron-down ml-1"></i>';
+                
+                // Close dropdown
+                languageDropdown.classList.remove('active');
+                
+                // Here you would typically implement language switching logic
+                console.log('Switching to language:', lang);
+            });
+        });
+
+        // Scroll reveal animation
+        const scrollRevealElements = document.querySelectorAll('.scroll-reveal');
+        
+        const scrollReveal = () => {
+            const windowHeight = window.innerHeight;
+            const revealPoint = 150;
+            
+            scrollRevealElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                
+                if (elementTop < windowHeight - revealPoint) {
+                    element.classList.add('active');
+                }
+            });
+        };
+
+        // Initial call and on scroll
+        scrollReveal();
+        window.addEventListener('scroll', scrollReveal);
+
+        // Card hover effects
+        const cards = document.querySelectorAll('.modern-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.zIndex = '10';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.zIndex = '1';
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Form submission
+        const newsletterForm = document.querySelector('form');
+        if (newsletterForm) {
+            newsletterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const emailInput = this.querySelector('input[type="email"]');
+                if (emailInput.value) {
+                    // Simulate form submission
+                    emailInput.value = '';
+                    alert('Thank you for subscribing to our newsletter!');
+                }
+            });
+        }
+
+        // Load more articles button
+        const loadMoreBtn = document.querySelector('button:contains("Load More Articles")');
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', function() {
+                this.innerHTML = '<i class="bi bi-arrow-clockwise animate-spin mr-2"></i> Loading...';
+                this.disabled = true;
+                
+                // Simulate loading
+                setTimeout(() => {
+                    this.innerHTML = 'Load More Articles <i class="bi bi-arrow-clockwise ml-2"></i>';
+                    this.disabled = false;
+                    alert('More articles loaded! (This is a demo)');
+                }, 1500);
+            });
+        }
+    </script>
+</body>
+</html>
