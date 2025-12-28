@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blog — My Logo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:0;background:#f8fafc}
+    
+    .modern-card{border-radius:14px;overflow:hidden}
+    .card-hover{transition:transform .36s cubic-bezier(.2,.9,.2,1),box-shadow .36s}
+    .card-hover:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(11,88,162,.08)}
+    .scroll-reveal{opacity:0;transform:translateY(30px);transition:all .55s cubic-bezier(.2,.9,.2,1)}
+    .scroll-reveal.active{opacity:1;transform:translateY(0)}
+    
+    .mobile-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s;z-index:60;backdrop-filter:blur(4px)}
+    .mobile-overlay.active{opacity:1;visibility:visible}
+    /* Mobile menu positioning: ensure menu sits above the overlay and is fixed under the navbar */
+    #mobileMenu{position:fixed;top:64px;left:0;right:0;z-index:80;display:none}
+    #mobileMenu.active{display:block}
+    #mobileMenu .flex{background:#fff;box-shadow:0 12px 40px rgba(0,0,0,.08);border-top-left-radius:12px;border-top-right-radius:12px;overflow:hidden;padding:1rem}
+
+    /* Mobile filter drawer (ensure it sits above overlay but below menu) */
+    .filter-drawer{position:fixed;right:0;top:0;bottom:0;width:320px;max-width:90vw;background:#fff;z-index:70;transform:translateX(100%);transition:transform .3s cubic-bezier(.2,.9,.2,1);box-shadow:-4px 0 24px rgba(0,0,0,.15);overflow-y:auto}
+    .filter-drawer.active{transform:translateX(0)}
+
+    /* Sidebar filters */
+    .sidebar-filters{position:sticky;top:88px;max-height:calc(100vh - 120px);overflow-y:auto} 
+    .sidebar-filters::-webkit-scrollbar{width:6px}
+    .sidebar-filters::-webkit-scrollbar-track{background:#f1f5f9}
+    .sidebar-filters::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+
+    .filter-section{margin-bottom:24px}
+    .filter-section-title{font-weight:600;font-size:.875rem;color:#334155;margin-bottom:12px;text-transform:uppercase;letter-spacing:.03em}
+    
+    .filter-option{display:flex;align-items:center;padding:10px 12px;border-radius:8px;cursor:pointer;transition:all .2s;margin-bottom:6px;border:1px solid transparent}
+    .filter-option:hover{background:#f1f5f9;border-color:#e2e8f0}
+    .filter-option.active{background:linear-gradient(135deg,#0ea5e9,#3b82f6);color:#fff;border-color:transparent}
+    .filter-option input[type="checkbox"]{width:18px;height:18px;margin-right:10px;cursor:pointer;accent-color:#0ea5e9}
+    .filter-option label{cursor:pointer;flex:1;font-size:.875rem}
+    .filter-option .count{font-size:.75rem;opacity:.7;margin-left:auto}
+
+    .filter-drawer-header{position:sticky;top:0;background:#fff;padding:20px;border-bottom:1px solid #e2e8f0;z-index:1}
+
+    /* Post feed */
+    .post-feed{display:flex;flex-direction:column;gap:18px}
+    .post-item{background:white;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:12px;border:1px solid #eef2f7;transition:transform .28s ease,box-shadow .28s ease}
+    .post-item:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(11,88,162,.06)}
+
+    .post-img{flex:0 0 auto;height:180px;border-radius:12px;overflow:hidden;position:relative}
+    .post-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
+    .post-item:hover .post-img img{transform:scale(1.05)}
+    .post-img .gradient-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.3),transparent);opacity:0;transition:opacity .3s}
+    .post-item:hover .post-img .gradient-overlay{opacity:1}
+
+    .post-content{flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:0}
+    .post-meta{display:flex;gap:12px;align-items:center;color:#6b7280;font-size:.875rem;flex-wrap:wrap}
+    .post-meta .tag{background:#eef2f7;padding:.3rem .7rem;border-radius:999px;font-weight:600;color:#0ea5e9;font-size:.8rem}
+    .post-meta .meta-right{margin-left:auto;color:#94a3b8;display:flex;align-items:center;gap:6px}
+    .avatar{width:32px;height:32px;border-radius:999px;overflow:hidden}
+    .excerpt{color:#475569;margin:8px 0;line-height:1.6;font-size:.9rem}
+    .post-title{font-weight:700;font-size:1.125rem;color:#0f172a;line-height:1.4}
+
+    /* Pagination */
+    .pagination{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:32px;flex-wrap:wrap}
+    .pagination button{min-width:40px;height:40px;border-radius:8px;border:1px solid #e2e8f0;background:#fff;color:#64748b;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
+    .pagination button:hover:not(:disabled){background:#f1f5f9;border-color:#cbd5e1}
+    .pagination button.active{background:linear-gradient(135deg,#0ea5e9,#3b82f6);color:#fff;border-color:transparent}
+    .pagination button:disabled{opacity:.3;cursor:not-allowed}
+
+    .post-card{transition:opacity .3s,transform .3s}
+    .post-card.hidden{display:none}
+
+    @media(min-width:768px){
+      .post-item{flex-direction:row;gap:20px}
+      .post-img{width:200px;height:140px;flex-shrink:0}
+    }
+
+    @media(min-width:1024px){
+      .main-content{display:grid;grid-template-columns:280px 1fr;gap:32px;align-items:start}
+    }
+
+    .filter-badge{display:inline-flex;align-items:center;gap:6px;padding:.4rem .8rem;background:#dbeafe;color:#0369a1;border-radius:999px;font-size:.8rem;font-weight:500}
+    .filter-badge button{background:none;border:none;color:#0369a1;cursor:pointer;padding:0;margin-left:4px;font-size:1rem;line-height:1}
+  </style>
+</head>
+<body>
+  <!-- Nav -->
+    <nav class="navbar fixed top-0 w-full z-50 bg-white border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="flex items-center space-x-2">
+                    <div
+                        class="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-600">
+                        <i class="bi bi-grid-3x3-gap-fill text-white"></i>
+                    </div>
+                    <span class="text-xl font-bold text-slate-800">MY LOGO</span>
+                </a>
+
+                <div class="hidden md:flex flex-1 max-w-md mx-8">
+                    <div class="relative w-full">
+                        <input type="text" placeholder="Search articles..."
+                            class="w-full px-4 py-2 pl-10 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <i class="bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                    </div>
+                </div>
+
+                <div class="hidden lg:flex items-center space-x-4">
+                    <a href="index.html" class="text-slate-700 hover:text-blue-600 transition font-medium">Home</a>
+                    <a href="blog.html" class="text-slate-700 hover:text-blue-600 transition font-medium">Blog</a>
+                    <a href="about.html" class="text-slate-700 hover:text-blue-600 transition font-medium">About</a>
+                    <div class="flex items-center space-x-3">
+                        <label for="langSelect" class="sr-only">Language</label>
+                        <select id="langSelect" class="border border-slate-200 rounded-lg px-3 py-2 bg-white text-sm">
+                            <option value="en">EN</option>
+                            <option value="es">ES</option>
+                            <option value="fr">FR</option>
+                        </select>
+                        <button
+                            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium shadow-md hover:shadow-lg">Sign
+                            In</button>
+                    </div>
+                </div>
+
+                <button id="mobileMenuToggle" class="lg:hidden text-slate-700" aria-controls="mobileMenu" aria-expanded="false" aria-label="Toggle menu">
+                    <i class="bi bi-list text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobileMenu" class="mobile-menu lg:hidden" role="menu" aria-hidden="true">
+            <div class="flex flex-col space-y-3">
+                <a href="index.html" class="text-slate-700 hover:text-blue-600 text-lg font-medium py-2">Home</a>
+                <a href="blog.html" class="text-slate-700 hover:text-blue-600 text-lg font-medium py-2">Blog</a>
+                <a href="about.html" class="text-slate-700 hover:text-blue-600 text-lg font-medium py-2">About</a>
+                <a href="#footer" class="text-slate-700 hover:text-blue-600 text-lg font-medium py-2">Contact</a>
+                <div class="pt-2 border-t border-slate-100 mt-2">
+                    <div class="mb-3">
+                      <label for="langSelectMobile" class="sr-only">Language</label>
+                      <select id="langSelectMobile" class="w-full rounded-lg border border-slate-200 px-3 py-2 bg-white text-sm">
+                        <option value="en">EN</option>
+                        <option value="es">ES</option>
+                        <option value="fr">FR</option>
+                      </select>
+                    </div>
+                    <button class="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium">Sign In</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobileOverlay" class="mobile-overlay lg:hidden"></div>
+    </nav>
+
+  <main class="pt-24 pb-12 max-w-7xl mx-auto px-4">
+
+    <!-- Mobile search -->
+    <div class="md:hidden mb-6 scroll-reveal">
+      <div class="relative">
+        <input type="text" id="searchInputMobile" placeholder="Search articles..." class="w-full px-4 py-3 pl-10 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <i class="bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+      </div>
+    </div>
+
+    <!-- Mobile filter button -->
+    <div class="lg:hidden mb-6 flex items-center justify-between gap-3">
+      <button id="mobileFilterToggle" class="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition">
+        <i class="bi bi-funnel"></i>
+        <span class="font-medium">Filters</span>
+        <span id="mobileFilterCount" class="hidden ml-1 px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full font-semibold">0</span>
+      </button>
+      
+      <select id="sortSelectMobile" class="px-4 py-2.5 rounded-lg border border-slate-200 bg-white font-medium">
+        <option value="new">Newest First</option>
+        <option value="old">Oldest First</option>
+        <option value="popular">Most Popular</option>
+      </select>
+    </div>
+
+    <!-- Active filters badges -->
+    <div id="activeFilterBadges" class="mb-6 flex flex-wrap gap-2 hidden"></div>
+
+    <!-- Main content grid -->
+    <div class="main-content">
+      <!-- Sidebar filters (desktop) -->
+      <aside class="hidden lg:block scroll-reveal">
+        <div class="sidebar-filters bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-lg font-bold text-slate-900">Filters</h2>
+            <button id="clearAll" class="text-sm text-blue-600 hover:text-blue-700 font-medium">Clear All</button>
+          </div>
+
+          <!-- Categories -->
+          <div class="filter-section">
+            <div class="filter-section-title">Categories</div>
+            <div id="categoryFilters">
+              <label class="filter-option">
+                <input type="checkbox" value="Technology" data-type="category">
+                <span>Technology</span>
+                <span class="count">2</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" value="Design" data-type="category">
+                <span>Design</span>
+                <span class="count">1</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" value="Business" data-type="category">
+                <span>Business</span>
+                <span class="count">1</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" value="Health" data-type="category">
+                <span>Health</span>
+                <span class="count">1</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" value="Travel" data-type="category">
+                <span>Travel</span>
+                <span class="count">1</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" value="Education" data-type="category">
+                <span>Education</span>
+                <span class="count">1</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Tags -->
+          <div class="filter-section">
+            <div class="filter-section-title">Popular Tags</div>
+            <div id="tagFilters">
+              <label class="filter-option">
+                <input type="checkbox" value="remote-work" data-type="tag">
+                <span>Remote Work</span>
+                <span class="count">2</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" value="ai-ml" data-type="tag">
+                <span>AI & ML</span>
+                <span class="count">1</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" value="sustainability" data-type="tag">
+                <span>Sustainability</span>
+                <span class="count">1</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" value="productivity" data-type="tag">
+                <span>Productivity</span>
+                <span class="count">3</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Sort (desktop) -->
+          <div class="filter-section">
+            <div class="filter-section-title">Sort By</div>
+            <select id="sortSelect" class="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white font-medium">
+              <option value="new">Newest First</option>
+              <option value="old">Oldest First</option>
+              <option value="popular">Most Popular</option>
+            </select>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Posts feed -->
+      <div>
+        <div class="mb-4 flex items-center justify-between">
+          <p class="text-slate-600 text-sm"><span id="resultCount">7</span> articles found</p>
+        </div>
+
+        <section id="posts" class="post-feed">
+          <!-- Posts will be paginated -->
+        </section>
+
+        <div id="noResults" class="text-center py-12 hidden scroll-reveal">
+          <i class="bi bi-search text-4xl text-slate-300 mb-4"></i>
+          <p class="text-slate-500 text-lg">No articles match your filters.</p>
+        </div>
+
+        <!-- Pagination -->
+        <div id="pagination" class="pagination"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Mobile filter drawer -->
+  <div id="filterDrawer" class="filter-drawer">
+    <div class="filter-drawer-header">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold">Filters</h2>
+        <button id="closeDrawer" class="text-2xl text-slate-500 hover:text-slate-700">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+      <button id="clearAllMobile" class="text-sm text-blue-600 hover:text-blue-700 font-medium">Clear All</button>
+    </div>
+
+    <div class="p-6 pt-0">
+      <!-- Categories (mobile) -->
+      <div class="filter-section">
+        <div class="filter-section-title">Categories</div>
+        <div id="categoryFiltersMobile">
+          <label class="filter-option">
+            <input type="checkbox" value="Technology" data-type="category">
+            <span>Technology</span>
+            <span class="count">2</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="Design" data-type="category">
+            <span>Design</span>
+            <span class="count">1</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="Business" data-type="category">
+            <span>Business</span>
+            <span class="count">1</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="Health" data-type="category">
+            <span>Health</span>
+            <span class="count">1</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="Travel" data-type="category">
+            <span>Travel</span>
+            <span class="count">1</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="Education" data-type="category">
+            <span>Education</span>
+            <span class="count">1</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Tags (mobile) -->
+      <div class="filter-section">
+        <div class="filter-section-title">Popular Tags</div>
+        <div id="tagFiltersMobile">
+          <label class="filter-option">
+            <input type="checkbox" value="remote-work" data-type="tag">
+            <span>Remote Work</span>
+            <span class="count">2</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="ai-ml" data-type="tag">
+            <span>AI & ML</span>
+            <span class="count">1</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="sustainability" data-type="tag">
+            <span>Sustainability</span>
+            <span class="count">1</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="productivity" data-type="tag">
+            <span>Productivity</span>
+            <span class="count">3</span>
+          </label>
+        </div>
+      </div>
+
+      <button id="applyFilters" class="w-full mt-6 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg font-semibold hover:shadow-lg transition">
+        Apply Filters
+      </button>
+    </div>
+  </div>
+
+      <footer id="footer" class="bg-slate-900 text-white pt-16 pb-8 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+                <div>
+                    <div class="flex items-center space-x-2 mb-6">
+                        <div
+                            class="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-600">
+                            <i class="bi bi-grid-3x3-gap-fill text-white"></i>
+                        </div>
+                        <span class="text-xl font-bold">MY LOGO</span>
+                    </div>
+                    <p class="text-slate-400 mb-8">A modern blog platform delivering quality content on technology,
+                        business, design, and lifestyle.</p>
+                    <div class="flex space-x-4">
+                        <a href="#"
+                            class="w-10 h-10 bg-slate-800 hover:bg-blue-700 rounded-lg flex items-center justify-center transition">
+
+                            <i class="bi bi-telegram"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 bg-slate-800 hover:bg-pink-600 rounded-lg flex items-center justify-center transition">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 bg-slate-800 hover:bg-blue-800 rounded-lg flex items-center justify-center transition">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+                 <div>
+                    <h3 class="text-lg font-bold mb-6">Contact Us</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-center text-slate-400">
+                            <i class="bi bi-envelope mr-3"></i>
+                            <span>info@mylogo.com</span>
+                        </li>
+                        <li class="flex items-center text-slate-400">
+                            <i class="bi bi-telephone mr-3"></i>
+                            <span>+1 (555) 123-4567</span>
+                        </li>
+                        <li class="flex items-start text-slate-400">
+                            <i class="bi bi-geo-alt mr-3 mt-1"></i>
+                            <span>123 Innovation Street<br>San Francisco, CA 94107</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold mb-6">Quick Links</h3>
+                    <ul class="space-y-4">
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Home</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Articles</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Categories</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">About Us</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold mb-6">Top Categories</h3>
+                    <ul class="space-y-4">
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Technology</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Business</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Design</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Health</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Travel</a></li>
+                    </ul>
+                </div>
+
+                
+            </div>
+
+            <div class="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-slate-500 text-sm mb-4 md:mb-0">
+                    &copy; 2025 My Logo Blog. All rights reserved.
+                </p>
+                <div class="flex space-x-6 text-sm text-slate-500">
+                    <a href="#" class="hover:text-white transition">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition">Terms of Service</a>
+                    <a href="#" class="hover:text-white transition">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+  <script>
+    // All posts data (added `slug` and sample `content` for detail pages)
+    const allPosts = [
+      {slug:'remote-first-companies',title:"Remote-First Companies",category:"Business",date:"2025-01-27",views:1200,tags:["remote-work","productivity"],img:"https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1200",excerpt:"How distributed teams succeed in the modern workplace.",author:"Saidjafar T.",read:"5 min read",avatar:"https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200",content:`<p>Distributed work has reshaped how companies hire and operate. This article explores the structures, tools, and cultural shifts needed to run fully remote teams.</p><p>Key practices include async-first communication, trust-based performance metrics, and well-designed onboarding.</p>`},
+      {slug:'the-ai-revolution',title:"The AI Revolution",category:"Technology",date:"2025-01-26",views:3200,tags:["ai-ml","productivity"],img:"https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200",excerpt:"How machine learning is changing everything.",author:"Michael Chen",read:"8 min read",avatar:"https://images.unsplash.com/photo-1545996124-1b5f63bd46a3?w=200",content:`<p>Machine learning is transforming industries from healthcare to finance. This piece outlines practical use-cases and what leaders should prioritize.</p><p>From model interpretability to data governance, the AI agenda is shifting fast.</p>`},
+      {slug:'designing-a-sustainable-future',title:"Designing a Sustainable Future",category:"Design",date:"2025-01-25",views:800,tags:["sustainability"],img:"https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1200",excerpt:"Green tech with beautiful UX.",author:"Emma Watson",read:"6 min read",avatar:"https://images.unsplash.com/photo-1544005311-3fed3d1f3f35?w=200",content:`<p>Design plays a pivotal role in sustainable tech. Learn how designers balance aesthetics and low-impact engineering.</p>`},
+      {slug:'travel-tips-2025',title:"Travel Tips for 2025",category:"Travel",date:"2025-01-20",views:670,tags:["productivity"],img:"https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1200",excerpt:"Smart budgeting and off-the-beaten-path finds.",author:"Travel Team",read:"7 min read",avatar:"https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=200",content:`<p>Travel smarter in 2025: tips on budgeting, unique stays, and slower travel to see more.</p>`},
+      {slug:'education-reform-road-ahead',title:"Education Reform: The Road Ahead",category:"Education",date:"2024-12-10",views:540,tags:[],img:"https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200",excerpt:"How accessible learning is reshaping careers.",author:"Education Desk",read:"6 min read",avatar:"https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=200",content:`<p>Education is evolving—this article looks at policy shifts and practical programs making learning more accessible.</p>`},
+      {slug:'healthy-habits-remote-workers',title:"Healthy Habits for Remote Workers",category:"Health",date:"2024-11-15",views:420,tags:["remote-work"],img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1200",excerpt:"Simple routines to improve wellbeing while working from home.",author:"Wellness Team",read:"4 min read",avatar:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200",content:`<p>Small routines can markedly improve mental and physical health when working remotely. Try a 20-minute midday walk and scheduled break times.</p>`},
+      {slug:'blockchain-beyond-crypto',title:"Blockchain Beyond Crypto",category:"Technology",date:"2024-10-05",views:890,tags:["ai-ml"],img:"https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=1200",excerpt:"Real-world applications of distributed ledger technology.",author:"Tech Insights",read:"9 min read",avatar:"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200",content:`<p>Beyond speculation, blockchain can streamline provenance and supply chains when implemented thoughtfully.</p>`}
+    ]; 
+
+    const POSTS_PER_PAGE = 5;
+    let currentPage = 1;
+    let filteredPosts = [...allPosts];
+    let selectedCategories = new Set();
+    let selectedTags = new Set();
+    let searchQuery = '';
+    let sortBy = 'new';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Mobile menu
+      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const mobileOverlay = document.getElementById('mobileOverlay');
+
+      function openMobileMenu() {
+        mobileMenu.classList.add('active');
+        mobileOverlay.classList.add('active');
+        mobileMenuToggle?.setAttribute('aria-expanded', 'true');
+        mobileMenu?.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeMobileMenu() {
+        mobileMenu.classList.remove('active');
+        mobileOverlay.classList.remove('active');
+        mobileMenuToggle?.setAttribute('aria-expanded', 'false');
+        mobileMenu?.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      mobileMenuToggle?.addEventListener('click', () => {
+        if (mobileMenu.classList.contains('active')) closeMobileMenu(); else openMobileMenu();
+      });
+      mobileOverlay?.addEventListener('click', closeMobileMenu);
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMobileMenu(); });
+
+      // Ensure menu/drawer closed on load
+      closeMobileMenu();
+
+      // Close mobile menu when navigating (tap links)
+      mobileMenu.querySelectorAll('a')?.forEach(a=>a.addEventListener('click', () => closeMobileMenu())); 
+
+      // Mobile filter drawer
+      const mobileFilterToggle = document.getElementById('mobileFilterToggle');
+      const filterDrawer = document.getElementById('filterDrawer');
+      const closeDrawer = document.getElementById('closeDrawer');
+      const applyFilters = document.getElementById('applyFilters');
+
+      function openDrawer() {
+        filterDrawer.classList.add('active');
+        mobileOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeDrawerFn() {
+        filterDrawer.classList.remove('active');
+        if (!mobileMenu.classList.contains('active')) {
+          mobileOverlay.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      }
+
+      mobileFilterToggle?.addEventListener('click', openDrawer);
+      closeDrawer?.addEventListener('click', closeDrawerFn);
+      applyFilters?.addEventListener('click', () => {
+        closeDrawerFn();
+        filterAndRender();
+      });
+
+      // Sync checkboxes between desktop and mobile
+      function syncCheckboxes(source, target) {
+        const sourceChecks = source.querySelectorAll('input[type="checkbox"]');
+        const targetChecks = target.querySelectorAll('input[type="checkbox"]');
+        
+        sourceChecks.forEach((cb, i) => {
+          cb.addEventListener('change', () => {
+            if (targetChecks[i]) targetChecks[i].checked = cb.checked;
+            updateSelectedFilters();
+            filterAndRender();
+          });
+        });
+      }
+
+      const categoryFilters = document.getElementById('categoryFilters');
+      const categoryFiltersMobile = document.getElementById('categoryFiltersMobile');
+      const tagFilters = document.getElementById('tagFilters');
+      const tagFiltersMobile = document.getElementById('tagFiltersMobile');
+
+      syncCheckboxes(categoryFilters, categoryFiltersMobile);
+      syncCheckboxes(categoryFiltersMobile, categoryFilters);
+      syncCheckboxes(tagFilters, tagFiltersMobile);
+      syncCheckboxes(tagFiltersMobile, tagFilters);
+
+      // Search
+      const searchInputTop = document.getElementById('searchInputTop');
+      const searchInputMobile = document.getElementById('searchInputMobile');
+
+      function handleSearch(e) {
+        searchQuery = e.target.value.toLowerCase().trim();
+        if (searchInputTop && e.target !== searchInputTop) searchInputTop.value = e.target.value;
+        if (searchInputMobile && e.target !== searchInputMobile) searchInputMobile.value = e.target.value;
+        filterAndRender();
+      }
+
+      searchInputTop?.addEventListener('input', handleSearch);
+      searchInputMobile?.addEventListener('input', handleSearch);
+
+      // Sort
+      const sortSelect = document.getElementById('sortSelect');
+      const sortSelectMobile = document.getElementById('sortSelectMobile');
+
+      function handleSort(e) {
+        sortBy = e.target.value;
+        if (sortSelect && e.target !== sortSelect) sortSelect.value = sortBy;
+        if (sortSelectMobile && e.target !== sortSelectMobile) sortSelectMobile.value = sortBy;
+        filterAndRender();
+      }
+
+      sortSelect?.addEventListener('change', handleSort);
+      sortSelectMobile?.addEventListener('change', handleSort);
+
+      // Clear filters
+      const clearAll = document.getElementById('clearAll');
+      const clearAllMobile = document.getElementById('clearAllMobile');
+
+      function clearFilters() {
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+        selectedCategories.clear();
+        selectedTags.clear();
+        updateSelectedFilters();
+        filterAndRender();
+      }
+
+      clearAll?.addEventListener('click', clearFilters);
+      clearAllMobile?.addEventListener('click', clearFilters);
+
+      // Update selected filters
+      function updateSelectedFilters() {
+        selectedCategories.clear();
+        selectedTags.clear();
+
+        document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+          if (cb.dataset.type === 'category') selectedCategories.add(cb.value);
+          if (cb.dataset.type === 'tag') selectedTags.add(cb.value);
+        });
+
+        // Update filter count badge
+        const totalFilters = selectedCategories.size + selectedTags.size;
+        const mobileFilterCount = document.getElementById('mobileFilterCount');
+        if (totalFilters > 0) {
+          mobileFilterCount.textContent = totalFilters;
+          mobileFilterCount.classList.remove('hidden');
+        } else {
+          mobileFilterCount.classList.add('hidden');
+        }
+
+        // Update active filter badges
+        updateFilterBadges();
+      }
+
+      // Update filter badges
+      function updateFilterBadges() {
+        const badgesContainer = document.getElementById('activeFilterBadges');
+        badgesContainer.innerHTML = '';
+        
+        const allFilters = [...selectedCategories, ...selectedTags];
+        if (allFilters.length > 0) {
+          badgesContainer.classList.remove('hidden');
+          allFilters.forEach(filter => {
+            const badge = document.createElement('div');
+            badge.className = 'filter-badge';
+            badge.innerHTML = `
+              <span>${filter}</span>
+              <button onclick="removeFilter('${filter}')" aria-label="Remove ${filter} filter">×</button>
+            `;
+            badgesContainer.appendChild(badge);
+          });
+        } else {
+          badgesContainer.classList.add('hidden');
+        }
+      }
+
+      // Remove individual filter
+      window.removeFilter = function(filter) {
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+          if (cb.value === filter) cb.checked = false;
+        });
+        updateSelectedFilters();
+        filterAndRender();
+      };
+
+      // Filter and render posts
+      function filterAndRender() {
+        // Filter posts
+        filteredPosts = allPosts.filter(post => {
+          // Category filter
+          const categoryMatch = selectedCategories.size === 0 || selectedCategories.has(post.category);
+          
+          // Tag filter
+          const tagMatch = selectedTags.size === 0 || post.tags.some(tag => selectedTags.has(tag));
+          
+          // Search filter
+          const searchMatch = !searchQuery || post.title.toLowerCase().includes(searchQuery) || 
+                              post.excerpt.toLowerCase().includes(searchQuery);
+          
+          return categoryMatch && tagMatch && searchMatch;
+        });
+
+        // Sort posts
+        if (sortBy === 'new') {
+          filteredPosts.sort((a, b) => b.date.localeCompare(a.date));
+        } else if (sortBy === 'old') {
+          filteredPosts.sort((a, b) => a.date.localeCompare(b.date));
+        } else if (sortBy === 'popular') {
+          filteredPosts.sort((a, b) => b.views - a.views);
+        }
+
+        // Update result count
+        document.getElementById('resultCount').textContent = filteredPosts.length;
+
+        // Reset to page 1
+        currentPage = 1;
+        renderPosts();
+        renderPagination();
+      }
+
+      // Render posts
+      function renderPosts() {
+        const postsContainer = document.getElementById('posts');
+        const noResults = document.getElementById('noResults');
+        
+        if (filteredPosts.length === 0) {
+          postsContainer.innerHTML = '';
+          noResults.classList.remove('hidden');
+          return;
+        }
+
+        noResults.classList.add('hidden');
+
+        const startIdx = (currentPage - 1) * POSTS_PER_PAGE;
+        const endIdx = startIdx + POSTS_PER_PAGE;
+        const postsToShow = filteredPosts.slice(startIdx, endIdx);
+
+        postsContainer.innerHTML = postsToShow.map(post => `
+          <article class="post-card post-item modern-card scroll-reveal active" data-slug="${post.slug}">
+            <div class="post-img">
+              <img src="${post.img}" alt="${post.title}">
+              <div class="gradient-overlay"></div>
+            </div>
+            <div class="post-content">
+              <div>
+                <div class="post-meta">
+                  <div class="tag">${post.category}</div>
+                  <div class="meta-right">
+                    <i class="bi bi-calendar3"></i>
+                    ${formatDate(post.date)}
+                    <span>•</span>
+                    <i class="bi bi-eye"></i>
+                    ${formatViews(post.views)}
+                  </div>
+                </div>
+                <h3 class="post-title mt-2"><a href="blog-detail.html?post=${post.slug}" class="hover:underline text-slate-900">${post.title}</a></h3>
+                <p class="excerpt">${post.excerpt}</p>
+              </div>
+              <div class="flex items-center justify-between mt-4">
+                <div class="flex items-center gap-3">
+                  <div class="avatar">
+                    <img src="${post.avatar}" alt="${post.author}">
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium text-slate-700">${post.author}</div>
+                    <div class="text-xs text-slate-500">${post.read}</div>
+                  </div>
+                </div>
+                <a href="blog-detail.html?post=${post.slug}" class="inline-flex items-center gap-2 text-blue-600 font-semibold hover:gap-3 transition-all group">
+                  <span>Read</span>
+                  <i class="bi bi-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+        `).join('');
+      }
+
+      // Render pagination
+      function renderPagination() {
+        const paginationContainer = document.getElementById('pagination');
+        const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
+
+        if (totalPages <= 1) {
+          paginationContainer.innerHTML = '';
+          return;
+        }
+
+        let paginationHTML = `
+          <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+            <i class="bi bi-chevron-left"></i>
+          </button>
+        `;
+
+        // Show page numbers
+        for (let i = 1; i <= totalPages; i++) {
+          if (
+            i === 1 || 
+            i === totalPages || 
+            (i >= currentPage - 1 && i <= currentPage + 1)
+          ) {
+            paginationHTML += `
+              <button onclick="changePage(${i})" class="${i === currentPage ? 'active' : ''}">${i}</button>
+            `;
+          } else if (i === currentPage - 2 || i === currentPage + 2) {
+            paginationHTML += `<span class="px-2 text-slate-400">...</span>`;
+          }
+        }
+
+        paginationHTML += `
+          <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+            <i class="bi bi-chevron-right"></i>
+          </button>
+        `;
+
+        paginationContainer.innerHTML = paginationHTML;
+      }
+
+      // Change page
+      window.changePage = function(page) {
+        const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
+        if (page < 1 || page > totalPages) return;
+        
+        currentPage = page;
+        renderPosts();
+        renderPagination();
+        
+        // Scroll to top of posts
+        document.getElementById('posts').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      };
+
+      // Format date
+      function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        const options = { month: 'short', day: 'numeric', year: 'numeric' };
+        return date.toLocaleDateString('en-US', options);
+      }
+
+      // Format views
+      function formatViews(views) {
+        if (views >= 1000) {
+          return (views / 1000).toFixed(1) + 'k';
+        }
+        return views.toString();
+      }
+
+      // Scroll reveal
+      const revealEls = document.querySelectorAll('.scroll-reveal');
+      const reveal = () => {
+        const h = window.innerHeight;
+        revealEls.forEach(el => {
+          const top = el.getBoundingClientRect().top;
+          if (top < h - 120) el.classList.add('active');
+        });
+      };
+      reveal();
+      window.addEventListener('scroll', reveal);
+
+      // Language selector (desktop) and mobile language select sync
+      const langSelect = document.getElementById('langSelect');
+      const langSelectMobile = document.getElementById('langSelectMobile');
+      function setSiteLang(val){ document.documentElement.lang = val; localStorage.setItem('site-lang', val); if(langSelect) langSelect.value = val; if(langSelectMobile) langSelectMobile.value = val; }
+      if (langSelect) {
+        const saved = localStorage.getItem('site-lang') || 'en';
+        setSiteLang(saved);
+        langSelect.addEventListener('change', (e) => setSiteLang(e.target.value));
+      }
+      if (langSelectMobile) langSelectMobile.addEventListener('change', (e) => setSiteLang(e.target.value));
+
+      // Helper to navigate to article detail
+      function goToArticle(slug){ window.location.href = `blog-detail.html?post=${slug}`; }
+
+      // Initial render
+      updateSelectedFilters();
+      filterAndRender();
+    });
+  </script>
+</body>
+</html>

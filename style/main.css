@@ -1,0 +1,204 @@
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+  }
+
+  ::-webkit-scrollbar {
+      width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+  }
+
+  ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #0ea5e9, #3b82f6);
+      border-radius: 10px;
+  }
+
+  html {
+      scroll-behavior: smooth;
+  }
+
+  body {
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      background-color: #f8fafc;
+  }
+
+  :root {
+      --primary: #0ea5e9;
+      --primary-light: #e0f2fe;
+      --primary-dark: #0284c7;
+      --secondary: #64748b;
+      --accent: #3b82f6;
+  }
+
+  .navbar {
+      transition: all 0.3s ease;
+  }
+
+  .navbar.scrolled {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(14, 165, 233, 0.1);
+  }
+
+  /* Slider Styles */
+  .slider-container {
+      position: relative;
+      overflow: hidden;
+  }
+
+  .slider-wrapper {
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .slider-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 20px;
+  }
+
+  .slider-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #cbd5e1;
+      cursor: pointer;
+      transition: all 0.3s ease;
+  }
+
+  .slider-dot.active {
+      width: 32px;
+      border-radius: 5px;
+      background: #0ea5e9;
+  }
+
+  .slider-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .slider-arrow:hover {
+      background: white;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      transform: translateY(-50%) scale(1.1);
+  }
+
+
+  .scroll-reveal {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .scroll-reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+  }
+
+  .card-hover {
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-hover:hover {
+      transform: translateY(-12px) scale(1.01);
+      box-shadow: 0 25px 50px rgba(14, 165, 233, 0.2);
+  }
+
+  .modern-card {
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+  }
+
+  .asymmetric-card {
+      clip-path: polygon(0 0, 100% 0, 100% 85%, 95% 100%, 0 100%);
+  }
+
+  .mobile-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.36);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .25s ease, visibility .25s;
+      z-index: 35;
+  }
+
+  .mobile-overlay.active {
+      opacity: 1;
+      visibility: visible;
+  }
+
+  .mobile-menu {
+      position: fixed;
+      top: 64px;
+      left: 0;
+      width: 100%;
+      background: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      padding: 20px;
+      transform-origin: top;
+      transform: translateY(-8px) scale(.98);
+      opacity: 0;
+      transition: transform .28s cubic-bezier(.2, .9, .2, 1), opacity .28s ease;
+      z-index: 40;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+  }
+
+  .mobile-menu.active {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+  }
+
+  #mobileMenuToggle i {
+      transition: transform .25s ease, opacity .2s ease;
+      will-change: transform;
+  }
+
+  #mobileMenuToggle[aria-expanded="true"] i {
+      transform: rotate(90deg);
+  }
+
+  .slider-item-latest {
+      width: 100%;
+      flex-shrink: 0;
+  }
+
+  @media (min-width: 768px) {
+      .slider-item-latest {
+          width: 50%;
+      }
+  }
+
+  @media (min-width: 1024px) {
+      .slider-item-latest {
+          width: 33.3333%;
+      }
+  }
+
+  @media (max-width: 768px) {
+      .slider-arrow {
+          width: 36px;
+          height: 36px;
+      }
+  }

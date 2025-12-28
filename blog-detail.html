@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Article — My Logo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      margin: 0;
+      background: #f8fafc;
+      color: #1e293b;
+      overflow-x: hidden;
+    }
+    
+    .article-hero {
+      position: relative;
+      height: 50vh;
+      min-height: 350px;
+      max-height: 500px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 0 0 24px 24px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 70%, rgba(0, 0, 0, 0.6) 100%);
+      z-index: 1;
+    }
+    
+    .hero-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 2;
+      padding: 2rem 1.5rem;
+    }
+    
+    @media (min-width: 768px) {
+      .hero-content {
+        padding: 3rem 2rem;
+      }
+    }
+    
+    .floating-nav {
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+    
+    .floating-nav.scrolled {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .content-card {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem 1rem;
+      margin-top: 2rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e2e8f0;
+    }
+    
+    @media (min-width: 768px) {
+      .content-card {
+        padding: 3rem;
+        margin-top: 3rem;
+      }
+    }
+    
+    .prose {
+      max-width: none;
+      color: #475569;
+      line-height: 1.8;
+      font-size: 1.0625rem;
+    }
+    
+    .prose p {
+      margin-bottom: 1.5rem;
+      color: #334155;
+    }
+    
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      background: #3b82f6;
+      color: white;
+      transition: transform 0.2s;
+    }
+    
+    .tag:hover {
+      transform: translateY(-2px);
+      background: #2563eb;
+    }
+    
+    .author-card {
+      background: #f1f5f9;
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 1px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+    
+    .author-card:hover {
+      background: #e2e8f0;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+    }
+    
+    .mobile-menu {
+      position: fixed;
+      top: 64px;
+      left: 0;
+      right: 0;
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      transform: translateY(-100%);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 40;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .mobile-menu.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    
+    .btn-primary {
+      background: #3b82f6;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      display: inline-block;
+      text-decoration: none;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    }
+    
+    .btn-primary:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+    
+    .search-container {
+      position: relative;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.75rem;
+      border-radius: 10px;
+      background: white;
+      border: 1px solid #cbd5e1;
+      color: #1e293b;
+      transition: all 0.3s ease;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .search-input::placeholder {
+      color: #94a3b8;
+    }
+    
+    .reading-progress {
+      position: fixed;
+      top: 64px;
+      left: 0;
+      height: 3px;
+      background: #3b82f6;
+      z-index: 50;
+      transition: width 0.1s ease;
+    }
+    
+    .share-button {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      color: #64748b;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .share-button:hover {
+      background: #3b82f6;
+      border-color: #3b82f6;
+      color: white;
+      transform: translateY(-2px);
+    }
+    
+    .avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+    
+    .avatar:hover {
+      border-color: #3b82f6;
+      transform: scale(1.05);
+    }
+    
+    .related-article {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    
+    .related-article:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      border-color: #3b82f6;
+    }
+    
+    .related-article img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    
+    .related-article:hover img {
+      transform: scale(1.05);
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .fade-in-up {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+    
+    .suggestions-box {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      margin-top: 0.5rem;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      border: 1px solid #e2e8f0;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .suggestion-item {
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    
+    .suggestion-item:last-child {
+      border-bottom: none;
+    }
+    
+    .suggestion-item:hover {
+      background: #f8fafc;
+    }
+  </style>
+</head>
+<body>
+  <div class="reading-progress" id="readingProgress"></div>
+  
+    <nav class="navbar fixed top-0 w-full z-50 bg-white border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="flex items-center space-x-2">
+                    <div
+                        class="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-600">
+                        <i class="bi bi-grid-3x3-gap-fill text-white"></i>
+                    </div>
+                    <span class="text-xl font-bold text-slate-800">MY LOGO</span>
+                </a>
+
+                
+                <style>
+                  /* Nav overrides to match other pages */
+                  .mobile-overlay{z-index:60}
+                  #mobileMenu{position:fixed;top:64px;left:0;right:0;z-index:80;display:none}
+                  #mobileMenu.active{display:block}
+                </style>
+
+
+                <div class="hidden lg:flex items-center space-x-4">
+                    <a href="index.html" class="text-slate-700 hover:text-blue-600 transition font-medium">Home</a>
+                    <a href="blog.html" class="text-slate-700 hover:text-blue-600 transition font-medium">Blog</a>
+                    <a href="about.html" class="text-slate-700 hover:text-blue-600 transition font-medium">About</a>
+                    <div class="flex items-center space-x-3">
+                        <label for="langSelect" class="sr-only">Language</label>
+                        <select id="langSelect" class="border border-slate-200 rounded-lg px-3 py-2 bg-white text-sm">
+                            <option value="en">EN</option>
+                            <option value="es">ES</option>
+                            <option value="fr">FR</option>
+                        </select>
+                        <button
+                            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium shadow-md hover:shadow-lg">Sign
+                            In</button>
+                    </div>
+                </div>
+
+                <button id="mobileMenuToggle" class="lg:hidden text-slate-700" aria-controls="mobileMenu" aria-expanded="false" aria-label="Toggle menu">
+                    <i class="bi bi-list text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobileMenu" class="mobile-menu lg:hidden" role="menu" aria-hidden="true">
+            <div class="flex flex-col space-y-3">
+                <a href="index.html" class="text-slate-700 hover:text-blue-600 text-lg font-medium py-2">Home</a>
+                <a href="blog.html" class="text-slate-700 hover:text-blue-600 text-lg font-medium py-2">Blog</a>
+                <a href="about.html" class="text-slate-700 hover:text-blue-600 text-lg font-medium py-2">About</a>
+                <a href="#footer" class="text-slate-700 hover:text-blue-600 text-lg font-medium py-2">Contact</a>
+                <div class="pt-2 border-t border-slate-100 mt-2">
+                    <div class="mb-3">
+                        <label for="langSelectMobile" class="sr-only">Language</label>
+                        <select id="langSelectMobile" class="w-full rounded-lg border border-slate-200 px-3 py-2 bg-white text-sm">
+                          <option value="en">EN</option>
+                          <option value="es">ES</option>
+                          <option value="fr">FR</option>
+                        </select>
+                    </div>
+                    <button
+                        class="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium">Sign
+                        In</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobileOverlay" class="mobile-overlay lg:hidden"></div>
+    </nav>
+
+  <main>
+    <div id="articleContainer"></div>
+  </main>
+
+    <footer id="footer" class="bg-slate-900 text-white pt-16 pb-8 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+                <div>
+                    <div class="flex items-center space-x-2 mb-6">
+                        <div
+                            class="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-600">
+                            <i class="bi bi-grid-3x3-gap-fill text-white"></i>
+                        </div>
+                        <span class="text-xl font-bold">MY LOGO</span>
+                    </div>
+                    <p class="text-slate-400 mb-8">A modern blog platform delivering quality content on technology,
+                        business, design, and lifestyle.</p>
+                    <div class="flex space-x-4">
+                        <a href="#"
+                            class="w-10 h-10 bg-slate-800 hover:bg-blue-700 rounded-lg flex items-center justify-center transition">
+
+                            <i class="bi bi-telegram"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 bg-slate-800 hover:bg-pink-600 rounded-lg flex items-center justify-center transition">
+                            <i class="bi bi-instagram"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 bg-slate-800 hover:bg-blue-800 rounded-lg flex items-center justify-center transition">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold mb-6">Contact Us</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-center text-slate-400">
+                            <i class="bi bi-envelope mr-3"></i>
+                            <span>info@mylogo.com</span>
+                        </li>
+                        <li class="flex items-center text-slate-400">
+                            <i class="bi bi-telephone mr-3"></i>
+                            <span>+1 (555) 123-4567</span>
+                        </li>
+                        <li class="flex items-start text-slate-400">
+                            <i class="bi bi-geo-alt mr-3 mt-1"></i>
+                            <span>123 Innovation Street<br>San Francisco, CA 94107</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold mb-6">Quick Links</h3>
+                    <ul class="space-y-4">
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Home</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Articles</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Categories</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">About Us</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold mb-6">Top Categories</h3>
+                    <ul class="space-y-4">
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Technology</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Business</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Design</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Health</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-white transition">Travel</a></li>
+                    </ul>
+                </div>
+
+                
+            </div>
+
+            <div class="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-slate-500 text-sm mb-4 md:mb-0">
+                    &copy; 2025 My Logo Blog. All rights reserved.
+                </p>
+                <div class="flex space-x-6 text-sm text-slate-500">
+                    <a href="#" class="hover:text-white transition">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition">Terms of Service</a>
+                    <a href="#" class="hover:text-white transition">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+  <script>
+    const posts = [
+      {slug:'remote-first-companies',title:"Remote-First Companies",category:"Business",date:"2025-01-27",views:1200,tags:["remote-work","productivity"],img:"https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1200",excerpt:"How distributed teams succeed in the modern workplace.",author:"Saidjafar T.",read:"5 min read",avatar:"https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200",content:`<p>Distributed work has reshaped how companies hire and operate. This article explores the structures, tools, and cultural shifts needed to run fully remote teams.</p><p>Key practices include async-first communication, trust-based performance metrics, and well-designed onboarding processes that set teams up for success.</p><p>The future of work is distributed, and companies that embrace this reality early will have a significant competitive advantage in attracting top talent.</p>`},
+      {slug:'the-ai-revolution',title:"The AI Revolution",category:"Technology",date:"2025-01-26",views:3200,tags:["ai-ml","productivity"],img:"https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200",excerpt:"How machine learning is changing everything.",author:"Michael Chen",read:"8 min read",avatar:"https://images.unsplash.com/photo-1545996124-1b5f63bd46a3?w=200",content:`<p>Machine learning is transforming industries from healthcare to finance. This piece outlines practical use-cases and what leaders should prioritize.</p><p>From model interpretability to data governance, the AI agenda is shifting fast. Organizations must adapt or risk being left behind in this technological revolution.</p>`},
+      {slug:'designing-a-sustainable-future',title:"Designing a Sustainable Future",category:"Design",date:"2025-01-25",views:800,tags:["sustainability"],img:"https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1200",excerpt:"Green tech with beautiful UX.",author:"Emma Watson",read:"6 min read",avatar:"https://images.unsplash.com/photo-1544005311-3fed3d1f3f35?w=200",content:`<p>Design plays a pivotal role in sustainable tech. Learn how designers balance aesthetics and low-impact engineering to create products that are both beautiful and environmentally responsible.</p>`}
+    ];
+
+    function parseQuery(){
+      const q = new URLSearchParams(window.location.search);
+      return q.get('post');
+    }
+
+    function renderArticle(slug){
+      const p = posts.find(x=>x.slug===slug);
+      const container = document.getElementById('articleContainer');
+      
+      if(!p){ 
+        container.innerHTML = `
+          <div class="min-h-screen flex items-center justify-center px-2">
+            <div class="text-center fade-in-up">
+              <h2 class="text-4xl font-bold mb-4">Article not found</h2>
+              <p class="text-slate-400 mb-6">The article you're looking for doesn't exist.</p>
+              <a href="blog.html" class="btn-primary">Back to blog</a>
+            </div>
+          </div>
+        `; 
+        return; 
+      }
+      
+      const relatedPosts = posts.filter(x => x.slug !== slug).slice(0, 2);
+      
+      container.innerHTML = `
+        <article>
+          <div class="article-hero" style="background-image:url('${p.img}')">
+            <div class="hero-content">
+              <div class="max-w-4xl mx-auto px-2">
+                <div class="flex items-center gap-3 mb-4 fade-in-up">
+                  <span class="tag">${p.category}</span>
+                  <span class="text-sm text-white">${new Date(p.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                  <span class="text-sm text-white">•</span>
+                  <span class="text-sm text-white">${p.views.toLocaleString()} views</span>
+                </div>
+                <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 fade-in-up drop-shadow-lg" style="animation-delay: 0.1s">${p.title}</h1>
+                <p class="text-lg text-white drop-shadow fade-in-up" style="animation-delay: 0.2s">${p.excerpt}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="max-w-4xl mx-auto px-2">
+            <div class="content-card fade-in-up" style="animation-delay: 0.3s">
+              <div class="flex flex-wrap items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-200">
+                <div class="flex items-center gap-4">
+                  <div class="avatar">
+                    <img src="${p.avatar}" alt="${p.author}" class="w-full h-full object-cover">
+                  </div>
+                  <div>
+                    <div class="font-semibold text-slate-900 text-lg">${p.author}</div>
+                    <div class="text-sm text-slate-500">${p.read}</div>
+                  </div>
+                </div>
+                
+                <div class="flex items-center gap-2">
+                  <button class="share-button" onclick="shareArticle('twitter')" title="Share on Twitter">
+                    <i class="bi bi-twitter"></i>
+                  </button>
+                  <button class="share-button" onclick="shareArticle('facebook')" title="Share on Facebook">
+                    <i class="bi bi-facebook"></i>
+                  </button>
+                  <button class="share-button" onclick="shareArticle('linkedin')" title="Share on LinkedIn">
+                    <i class="bi bi-linkedin"></i>
+                  </button>
+                  <button class="share-button" onclick="shareArticle('copy')" title="Copy link">
+                    <i class="bi bi-link-45deg"></i>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="prose">
+                ${p.content}
+              </div>
+              
+              <div class="flex flex-wrap gap-2 mt-8 pt-6 border-t border-slate-200">
+                ${p.tags.map(tag => `<span class="px-4 py-2 bg-slate-100 text-slate-700 rounded-full text-sm font-medium">#${tag}</span>`).join('')}
+              </div>
+              
+              <div class="author-card mt-8">
+                <div class="flex items-start gap-4">
+                  <div class="avatar">
+                    <img src="${p.avatar}" alt="${p.author}" class="w-full h-full object-cover">
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="font-bold text-slate-900 text-xl mb-2">About ${p.author}</h3>
+                    <p class="text-slate-600 mb-4">Passionate writer and thought leader in ${p.category.toLowerCase()}. Sharing insights and experiences to help others grow.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            ${relatedPosts.length > 0 ? `
+              <div class="mt-16 mb-8">
+                <h2 class="text-3xl font-bold text-slate-900 mb-8">Related Articles</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                  ${relatedPosts.map(rp => `
+                    <a href="blog-detail.html?post=${rp.slug}" class="related-article block group">
+                      <div class="overflow-hidden">
+                        <img src="${rp.img}" alt="${rp.title}" class="w-full">
+                      </div>
+                      <div class="p-6">
+                        <div class="flex items-center gap-2 mb-3">
+                          <span class="text-xs font-semibold text-blue-600">${rp.category}</span>
+                          <span class="text-xs text-slate-400">•</span>
+                          <span class="text-xs text-slate-500">${rp.read}</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition">${rp.title}</h3>
+                        <p class="text-slate-600 text-sm">${rp.excerpt}</p>
+                      </div>
+                    </a>
+                  `).join('')}
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        </article>
+      `;
+      
+      document.title = p.title + ' — My Logo';
+    }
+
+    function shareArticle(platform) {
+      const url = window.location.href;
+      const text = document.title;
+      
+      switch(platform) {
+        case 'twitter':
+          window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank');
+          break;
+        case 'facebook':
+          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+          break;
+        case 'linkedin':
+          window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+          break;
+        case 'copy':
+          navigator.clipboard.writeText(url).then(() => {
+            alert('Link copied to clipboard!');
+          });
+          break;
+      }
+    }
+
+    // Search functionality
+    function renderSuggestions(items, boxId) {
+      const box = document.getElementById(boxId);
+      if(!items.length) { 
+        box.classList.add('hidden'); 
+        box.innerHTML = ''; 
+        return; 
+      }
+      box.classList.remove('hidden');
+      box.innerHTML = items.slice(0, 5).map(p => `
+        <div class="suggestion-item" onclick="window.location.href='blog-detail.html?post=${p.slug}'">
+          <div class="font-semibold text-slate-900 mb-1">${p.title}</div>
+          <div class="text-xs text-slate-500">${p.excerpt}</div>
+        </div>
+      `).join('');
+    }
+
+    const searchInputTop = document.getElementById('searchInputTop');
+    const searchInputMobile = document.getElementById('searchInputMobile');
+    
+    searchInputTop?.addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      if(q.length < 2) { 
+        document.getElementById('searchSuggestions').classList.add('hidden'); 
+        return;
+      }
+      const items = posts.filter(p => p.title.toLowerCase().includes(q) || p.excerpt.toLowerCase().includes(q));
+      renderSuggestions(items, 'searchSuggestions');
+    });
+    
+    searchInputMobile?.addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      if(q.length < 2) return;
+      const items = posts.filter(p => p.title.toLowerCase().includes(q) || p.excerpt.toLowerCase().includes(q));
+      // For mobile, navigate directly on selection
+    });
+
+    document.addEventListener('click', (e) => {
+      const suggestionsBox = document.getElementById('searchSuggestions');
+      if (suggestionsBox && !suggestionsBox.contains(e.target) && e.target !== searchInputTop) {
+        suggestionsBox.classList.add('hidden');
+      }
+    });
+
+    // Language sync
+    const langSelect = document.getElementById('langSelect');
+    const langSelectMobile = document.getElementById('langSelectMobile');
+    
+    function setSiteLang(val) {
+      document.documentElement.lang = val;
+      localStorage.setItem('site-lang', val);
+      if(langSelect) langSelect.value = val;
+      if(langSelectMobile) langSelectMobile.value = val;
+    }
+    
+    if(langSelect) {
+      const saved = localStorage.getItem('site-lang') || 'en';
+      setSiteLang(saved);
+      langSelect.addEventListener('change', (e) => setSiteLang(e.target.value));
+    }
+    
+    if(langSelectMobile) {
+      langSelectMobile.addEventListener('change', (e) => setSiteLang(e.target.value));
+    }
+
+    // Mobile menu
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    
+    mobileMenuToggle?.addEventListener('click', () => {
+      mobileMenu.classList.toggle('active');
+      const icon = mobileMenuToggle.querySelector('i');
+      if(mobileMenu.classList.contains('active')) {
+        icon.classList.replace('bi-list', 'bi-x');
+      } else {
+        icon.classList.replace('bi-x', 'bi-list');
+      }
+    });
+
+    // Floating nav on scroll
+    const nav = document.querySelector('.floating-nav');
+    window.addEventListener('scroll', () => {
+      if(window.scrollY > 100) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    });
+
+    // Reading progress
+    window.addEventListener('scroll', () => {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollPercentage = (scrollTop / (documentHeight - windowHeight)) * 100;
+      document.getElementById('readingProgress').style.width = scrollPercentage + '%';
+    });
+
+    // Render article
+    renderArticle(parseQuery());
+  </script>
+</body>
+</html>
