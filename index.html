@@ -12,6 +12,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="./style/main.css">
+    <link rel="stylesheet" href="./style/pages.css">
 </head>
 
 <body class="bg-slate-50">
@@ -35,14 +36,7 @@
                         <!-- Search suggestions (desktop) -->
                         <div id="searchSuggestions" class="hidden absolute left-0 right-0 mt-2 bg-white rounded-lg shadow-lg z-50 overflow-hidden border border-slate-100"></div>
                     </div>
-                </div> 
-                <style>
-                  /* Nav overrides to match other pages */
-                  .mobile-overlay{z-index:60}
-                  #mobileMenu{position:fixed;top:64px;left:0;right:0;z-index:80;display:none}
-                  #mobileMenu.active{display:block}
-                </style>
-
+                </div>
 
                 <div class="hidden lg:flex items-center space-x-4">
                     <a href="index.html" class="text-slate-700 hover:text-blue-600 transition font-medium">Home</a>
@@ -581,285 +575,20 @@
         </div>
     </footer>
 
-    <script>
-        // Slider functionality
-        class Slider {
-            constructor(wrapperId, dotsId, autoplayDelay = 5000) {
-                this.wrapper = document.getElementById(wrapperId);
-                this.dotsContainer = document.getElementById(dotsId);
-                this.currentIndex = 0;
-                this.items = this.wrapper.querySelectorAll('.slider-item');
-                this.autoplayDelay = autoplayDelay;
-                this.autoplayInterval = null;
-
-                this.init();
-            }
-
-            init() {
-                this.createDots();
-                this.updateSlider();
-                this.startAutoplay();
-            }
-
-            createDots() {
-                for (let i = 0; i < this.items.length; i++) {
-                    const dot = document.createElement('div');
-                    dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
-                    dot.onclick = () => this.goToSlide(i);
-                    this.dotsContainer.appendChild(dot);
-                }
-            }
-
-            updateSlider() {
-                this.wrapper.style.transform = `translateX(-${this.currentIndex * 100}%)`;
-
-                const dots = this.dotsContainer.querySelectorAll('.slider-dot');
-                dots.forEach((dot, index) => {
-                    dot.classList.toggle('active', index === this.currentIndex);
-                });
-            }
-
-            next() {
-                this.currentIndex = (this.currentIndex + 1) % this.items.length;
-                this.updateSlider();
-                this.resetAutoplay();
-            }
-
-            prev() {
-                this.currentIndex = (this.currentIndex - 1 + this.items.length) % this.items.length;
-                this.updateSlider();
-                this.resetAutoplay();
-            }
-
-            goToSlide(index) {
-                this.currentIndex = index;
-                this.updateSlider();
-                this.resetAutoplay();
-            }
-
-            startAutoplay() {
-                this.autoplayInterval = setInterval(() => this.next(), this.autoplayDelay);
-            }
-
-            resetAutoplay() {
-                clearInterval(this.autoplayInterval);
-                this.startAutoplay();
-            }
-        }
-
-        const featuredSlider = new Slider('featuredSlider', 'featuredDots', 5000);
 
 
 
-        // Navigate to article page
-        function goToArticle(articleId) {
-            window.location.href = `blog-detail.html?post=${articleId}`;
-        }
 
-        // Navbar scroll effect
-        window.addEventListener('scroll', function () {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
 
-        // Mobile menu toggle + accessibility + overlay
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const mobileMenu = document.getElementById('mobileMenu');
-        const mobileOverlay = document.getElementById('mobileOverlay');
 
-        function openMobileMenu() {
-            mobileMenu.classList.add('active');
-            mobileOverlay.classList.add('active');
-            mobileMenuToggle.setAttribute('aria-expanded', 'true');
-            mobileMenu.setAttribute('aria-hidden', 'false');
-            const icon = mobileMenuToggle.querySelector('i');
-            icon.classList.remove('bi-list');
-            icon.classList.add('bi-x');
-            document.body.style.overflow = 'hidden';
-        }
 
-        function closeMobileMenu() {
-            mobileMenu.classList.remove('active');
-            mobileOverlay.classList.remove('active');
-            mobileMenuToggle.setAttribute('aria-expanded', 'false');
-            mobileMenu.setAttribute('aria-hidden', 'true');
-            const icon = mobileMenuToggle.querySelector('i');
-            icon.classList.remove('bi-x');
-            icon.classList.add('bi-list');
-            document.body.style.overflow = '';
-        }
 
-        mobileMenuToggle.addEventListener('click', function () {
-            if (mobileMenu.classList.contains('active')) {
-                closeMobileMenu();
-            } else {
-                openMobileMenu();
-            }
-        });
 
-        // Close mobile menu when navigating (tap links)
-        mobileMenu.querySelectorAll('a')?.forEach(a=>a.addEventListener('click', () => closeMobileMenu()));
-           
 
-        mobileOverlay.addEventListener('click', closeMobileMenu);
 
-        // Close on Escape key
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') closeMobileMenu();
-        });
-
-        // Close mobile menu when a menu item is clicked (improves UX on mobile)
-        mobileMenu.querySelectorAll('a, button').forEach(el => {
-            el.addEventListener('click', function () {
-                // small delay to allow link activation on tap devices
-                setTimeout(closeMobileMenu, 80);
-            });
-        });
-
-        // Language selector (persist selection and set document lang)
-        const langSelect = document.getElementById('langSelect');
-        if (langSelect) {
-            const saved = localStorage.getItem('site-lang') || document.documentElement.lang || 'en';
-            langSelect.value = saved;
-            function setSiteLang(val) {
-                document.documentElement.lang = val;
-                localStorage.setItem('site-lang', val);
-            }
-            langSelect.addEventListener('change', (e) => setSiteLang(e.target.value));
-            setSiteLang(langSelect.value);
-        }
-
-        // Desktop search suggestions (full article list)
-        const _posts = [
-          {slug:'remote-first-companies',title:'Remote-First Companies',excerpt:'How distributed teams succeed in the modern workplace.'},
-          {slug:'the-ai-revolution',title:'The AI Revolution',excerpt:'How machine learning is changing everything.'},
-          {slug:'designing-a-sustainable-future',title:'Designing a Sustainable Future',excerpt:'Green tech with beautiful UX.'},
-          {slug:'travel-tips-2025',title:'Travel Tips for 2025',excerpt:'Smart budgeting and off-the-beaten-path finds.'},
-          {slug:'education-reform-road-ahead',title:'Education Reform: The Road Ahead',excerpt:'How accessible learning is reshaping careers.'},
-          {slug:'healthy-habits-remote-workers',title:'Healthy Habits for Remote Workers',excerpt:'Simple routines to improve wellbeing while working from home.'},
-          {slug:'blockchain-beyond-crypto',title:'Blockchain Beyond Crypto',excerpt:'Real-world applications of distributed ledger technology.'}
-        ];
-        const searchInputTopEl = document.getElementById('searchInputTop');
-        const suggestionsBox = document.getElementById('searchSuggestions');
-
-        function renderSuggestions(items){
-          if(!items || items.length === 0){ suggestionsBox.classList.add('hidden'); suggestionsBox.innerHTML = ''; return; }
-          suggestionsBox.classList.remove('hidden');
-          suggestionsBox.innerHTML = items.slice(0,6).map(p => `
-            <a onclick="goToArticle('${p.slug}')" class="block px-4 py-3 hover:bg-slate-50 cursor-pointer">
-              <div class="text-sm font-medium">${p.title}</div>
-              <div class="text-xs text-slate-500 mt-1">${p.excerpt}</div>
-            </a>
-          `).join('');
-        }
-
-        searchInputTopEl?.addEventListener('input', (e) => {
-          const q = e.target.value.trim().toLowerCase();
-          if (q.length < 2) { suggestionsBox.classList.add('hidden'); return; }
-          const items = _posts.filter(p => p.title.toLowerCase().includes(q) || p.excerpt.toLowerCase().includes(q));
-          renderSuggestions(items);
-        });
-
-        document.addEventListener('click', (e) => {
-          if (!document.getElementById('searchSuggestions')?.contains(e.target) && e.target !== searchInputTopEl) {
-            suggestionsBox.classList.add('hidden');
-          }
-        });
-
-        // Scroll reveal
-        const scrollRevealElements = document.querySelectorAll('.scroll-reveal');
-
-        const scrollReveal = () => {
-            const windowHeight = window.innerHeight;
-            const revealPoint = 150;
-
-            scrollRevealElements.forEach(element => {
-                const elementTop = element.getBoundingClientRect().top;
-
-                if (elementTop < windowHeight - revealPoint) {
-                    element.classList.add('active');
-                }
-            });
-        };
-
-        scrollReveal();
-        window.addEventListener('scroll', scrollReveal);
-
-        // Newsletter form
-        function handleSubscribe(e) {
-            e.preventDefault();
-            const emailInput = e.target.querySelector('input[type="email"]');
-            if (emailInput.value) {
-                alert('Thank you for subscribing!');
-                emailInput.value = '';
-            }
-        }
-    </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-
-            class SliderLatest {
-                constructor(wrapperId) {
-                    this.wrapper = document.getElementById(wrapperId);
-
-                    if (!this.wrapper) {
-                        console.error("Slider wrapper not found:", wrapperId);
-                        return;
-                    }
-
-                    this.items = this.wrapper.querySelectorAll('.slider-item-latest');
-
-                    if (!this.items.length) {
-                        console.error("No slider items found inside:", wrapperId);
-                        return;
-                    }
-
-                    this.index = 0;
-
-                    this.update();
-                    window.addEventListener('resize', () => this.update());
-                }
-
-                slideWidth() {
-                    return this.items[0].getBoundingClientRect().width;
-                }
-
-                visibleCount() {
-                    const containerWidth = this.wrapper.parentElement.offsetWidth;
-                    return Math.round(containerWidth / this.slideWidth());
-                }
-
-                maxIndex() {
-                    return Math.max(0, this.items.length - this.visibleCount());
-                }
-
-                update() {
-                    const translateX = this.index * this.slideWidth();
-                    this.wrapper.style.transform = `translateX(-${translateX}px)`;
-                }
-
-                next() {
-                    if (this.index < this.maxIndex()) {
-                        this.index++;
-                        this.update();
-                    }
-                }
-
-                prev() {
-                    if (this.index > 0) {
-                        this.index--;
-                        this.update();
-                    }
-                }
-            }
-
-            window.latestSlider = new SliderLatest('latestSlider');
-        });
-    </script>
+    <!-- <script src="./js/anti-devtools.js" defer></script> -->
+    <script src="./js/main.js" defer></script>
+    <script type="module" src="./js/index.js" defer></script>
 </body>
 
 </html>

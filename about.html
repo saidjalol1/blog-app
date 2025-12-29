@@ -6,19 +6,7 @@
   <title>About — My Logo</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:0;background:#f8fafc}
-    .team-card{border-radius:12px;background:white;padding:18px;box-shadow:0 10px 30px rgba(11,88,162,.06)}
-    .scroll-reveal{opacity:0;transform:translateY(30px);transition:all .5s cubic-bezier(.2,.9,.2,1)}
-    .scroll-reveal.active{opacity:1;transform:translateY(0)}
-    .mobile-overlay{position:fixed;inset:0;background:rgba(0,0,0,.36);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s;z-index:60}
-    .mobile-overlay.active{opacity:1;visibility:visible}
-    /* Mobile menu fixed positioning to avoid overlay stacking issues */
-    #mobileMenu{position:fixed;top:64px;left:0;right:0;z-index:50;display:none}
-    #mobileMenu.active{display:block}
-    #mobileMenu .flex{background:#fff;box-shadow:0 12px 40px rgba(0,0,0,.08);overflow:hidden;padding:1rem;border-top-left-radius:12px;border-top-right-radius:12px} 
-  </style>
+  <link rel="stylesheet" href="./style/pages.css">
 </head>
 <body>
   <!-- Navbar (shared) -->
@@ -41,11 +29,7 @@
                         <div id="searchSuggestions" class="hidden absolute left-0 right-0 mt-2 bg-white rounded-lg shadow-lg z-50 overflow-hidden border border-slate-100"></div>
                     </div>
                 </div>
-                <style>
-                  .mobile-overlay{z-index:60}
-                  #mobileMenu{position:fixed;top:64px;left:0;right:0;z-index:80;display:none}
-                  #mobileMenu.active{display:block}
-                </style>
+
 
                 <div class="hidden lg:flex items-center space-x-4">
                     <a href="index.html" class="text-slate-700 hover:text-blue-600 transition font-medium">Home</a>
@@ -240,50 +224,8 @@
         </div>
     </footer>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-      const mobileMenu = document.getElementById('mobileMenu');
-      const mobileOverlay = document.getElementById('mobileOverlay');
-
-      function openMobileMenu() { mobileMenu.classList.add('active'); mobileOverlay.classList.add('active'); mobileMenuToggle.setAttribute('aria-expanded','true'); mobileMenu.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
-      function closeMobileMenu() { mobileMenu.classList.remove('active'); mobileOverlay.classList.remove('active'); mobileMenuToggle.setAttribute('aria-expanded','false'); mobileMenu.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
-
-      mobileMenuToggle.addEventListener('click', () => { if (mobileMenu.classList.contains('active')) closeMobileMenu(); else openMobileMenu(); });
-      mobileOverlay.addEventListener('click', closeMobileMenu);
-      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMobileMenu(); });
-
-      // small posts array for suggestions (full article list)
-      const _posts = [
-        {slug:'remote-first-companies',title:'Remote-First Companies',excerpt:'How distributed teams succeed in the modern workplace.'},
-        {slug:'the-ai-revolution',title:'The AI Revolution',excerpt:'How machine learning is changing everything.'},
-        {slug:'designing-a-sustainable-future',title:'Designing a Sustainable Future',excerpt:'Green tech with beautiful UX.'},
-        {slug:'travel-tips-2025',title:'Travel Tips for 2025',excerpt:'Smart budgeting and off-the-beaten-path finds.'},
-        {slug:'education-reform-road-ahead',title:'Education Reform: The Road Ahead',excerpt:'How accessible learning is reshaping careers.'},
-        {slug:'healthy-habits-remote-workers',title:'Healthy Habits for Remote Workers',excerpt:'Simple routines to improve wellbeing while working from home.'},
-        {slug:'blockchain-beyond-crypto',title:'Blockchain Beyond Crypto',excerpt:'Real-world applications of distributed ledger technology.'}
-      ];
-      const searchInput = document.getElementById('searchInputTop');
-      const suggestionsBox = document.getElementById('searchSuggestions');
-      function renderSuggestions(items){ if(!items.length){ suggestionsBox.classList.add('hidden'); suggestionsBox.innerHTML = ''; return; } suggestionsBox.classList.remove('hidden'); suggestionsBox.innerHTML = items.slice(0,5).map(p => `<a onclick="goToArticle('${p.slug}')" class="block px-4 py-3 hover:bg-slate-50 cursor-pointer"><div class="text-sm font-medium">${p.title}</div><div class="text-xs text-slate-500 mt-1">${p.excerpt}</div></a>`).join(''); }
-      function goToArticle(slug){ window.location.href = `blog-detail.html?post=${slug}`; }
-      searchInput?.addEventListener('input',(e)=>{ const q = e.target.value.trim().toLowerCase(); if(q.length<2){ suggestionsBox.classList.add('hidden'); return;} const items = _posts.filter(p => p.title.toLowerCase().includes(q)||p.excerpt.toLowerCase().includes(q)); renderSuggestions(items); });
-      document.addEventListener('click', (e) => { if (!document.getElementById('searchSuggestions')?.contains(e.target) && e.target !== searchInput) suggestionsBox.classList.add('hidden'); });
-      // language sync
-      const langSelect = document.getElementById('langSelect'); const langSelectMobile = document.getElementById('langSelectMobile'); function setSiteLang(val){ document.documentElement.lang = val; localStorage.setItem('site-lang', val); if(langSelect) langSelect.value = val; if(langSelectMobile) langSelectMobile.value = val; } if(langSelect) { const saved = localStorage.getItem('site-lang') || document.documentElement.lang || 'en'; setSiteLang(saved); langSelect.addEventListener('change', (e)=>setSiteLang(e.target.value)); } if(langSelectMobile) langSelectMobile.addEventListener('change', (e)=>setSiteLang(e.target.value));
-
-      // Ensure menu is closed by default on page load
-      closeMobileMenu();
-
-      // Close mobile menu when navigating
-      mobileMenu.querySelectorAll('a')?.forEach(a=>a.addEventListener('click', () => closeMobileMenu()));
-
-      if (langSelect) { const saved = localStorage.getItem('site-lang') || document.documentElement.lang || 'en'; langSelect.value = saved; function setSiteLang(val) { document.documentElement.lang = val; localStorage.setItem('site-lang', val); } langSelect.addEventListener('change', (e) => setSiteLang(e.target.value)); setSiteLang(langSelect.value); }
-
-      const revealEls = document.querySelectorAll('.scroll-reveal');
-      const reveal = () => { const h = window.innerHeight; revealEls.forEach(el => { const top = el.getBoundingClientRect().top; if (top < h - 120) el.classList.add('active'); }); };
-      reveal(); window.addEventListener('scroll', reveal);
-    });
-  </script>
+  <script src="./js/anti-devtools.js" defer></script>
+  <script src="./js/main.js" defer></script>
+  <script type="module" src="./js/about.js" defer></script>
 </body>
 </html>
