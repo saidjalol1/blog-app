@@ -1,0 +1,69 @@
+{% extends 'wrapper.html' %}
+{% block content %}
+{% load static %}
+
+
+  <main class="pt-28 max-w-6xl mx-auto px-4">
+    <header class="mb-8 scroll-reveal">
+      <h1 class="text-3xl font-bold">About Us</h1>
+      <p class="text-slate-600 mt-2">We build modern, readable content and design delightful reading experiences.</p>
+    </header>
+
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center mb-12 scroll-reveal">
+      <div>
+        <h2 class="text-2xl font-bold mb-4">Our Mission</h2>
+        <p class="text-slate-600">Deliver high quality insights about technology, business, and design—highlighting people-centred approaches and accessible learning.</p>
+      </div>
+      <div class="modern-card overflow-hidden rounded-2xl scroll-reveal">
+        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200" class="w-full h-56 object-cover">
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h3 class="text-lg font-bold mb-6">Team</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="team-card scroll-reveal">
+          <div class="flex items-center gap-3">
+            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200" class="w-14 h-14 rounded-full object-cover">
+            <div>
+              <div class="font-bold">Saidjafar T.</div>
+              <div class="text-sm text-slate-500">Founder & Editor</div>
+            </div>
+          </div>
+          <p class="text-sm text-slate-600 mt-3">Designs editorial direction and writes feature articles.</p>
+        </div>
+
+        <div class="team-card scroll-reveal">
+          <div class="flex items-center gap-3">
+            <img src="https://images.unsplash.com/photo-1545996124-1b5f63bd46a3?w=200" class="w-14 h-14 rounded-full object-cover">
+            <div>
+              <div class="font-bold">Michael Chen</div>
+              <div class="text-sm text-slate-500">Tech Writer</div>
+            </div>
+          </div>
+          <p class="text-sm text-slate-600 mt-3">Focuses on AI, data, and scaling systems.</p>
+        </div>
+
+        <div class="team-card scroll-reveal">
+          <div class="flex items-center gap-3">
+            <img src="https://images.unsplash.com/photo-1544005311-3fed3d1f3f35?w=200" class="w-14 h-14 rounded-full object-cover">
+            <div>
+              <div class="font-bold">Emma Watson</div>
+              <div class="text-sm text-slate-500">Design Lead</div>
+            </div>
+          </div>
+          <p class="text-sm text-slate-600 mt-3">Designs product experiences and direction.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h3 class="text-lg font-bold mb-4 scroll-reveal">Contact</h3>
+      <p class="text-slate-600">Want to contribute? <a href="#footer" class="text-blue-600">Get in touch</a>.</p>
+    </section>
+
+  </main>
+
+
+  <script type="module" src="{% static 'js/about.js' %}" defer></script>
+{% endblock %}

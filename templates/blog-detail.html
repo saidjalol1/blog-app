@@ -1,0 +1,10 @@
+{% extends 'wrapper.html' %}
+{% block content %}
+{% load static %}
+  <div class="reading-progress" id="readingProgress"></div>
+  <main>
+    <div id="articleContainer"></div>
+  </main>
+
+  <script type="module" src="{% static 'js/blog-detail.js' %}" defer></script>
+{% endblock %}

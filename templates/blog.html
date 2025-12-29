@@ -1,0 +1,223 @@
+{% extends 'wrapper.html' %}
+{% load static %}
+
+{% block content %}
+  <main class="pt-24 pb-12 max-w-7xl mx-auto px-4">
+
+    <!-- Mobile search -->
+    <div class="md:hidden mb-6 scroll-reveal">
+      <div class="relative">
+        <input type="text" id="searchInputMobile" placeholder="Search articles..." class="w-full px-4 py-3 pl-10 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <i class="bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+      </div>
+    </div>
+
+    <!-- Mobile filter button -->
+    <div class="lg:hidden mb-6 flex items-center justify-between gap-3">
+      <button id="mobileFilterToggle" class="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition">
+        <i class="bi bi-funnel"></i>
+        <span class="font-medium">Filters</span>
+        <span id="mobileFilterCount" class="hidden ml-1 px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full font-semibold">0</span>
+      </button>
+      
+      <select id="sortSelectMobile" class="px-4 py-2.5 rounded-lg border border-slate-200 bg-white font-medium">
+        <option value="new">Newest First</option>
+        <option value="old">Oldest First</option>
+        <option value="popular">Most Popular</option>
+      </select>
+    </div>
+
+    <!-- Active filters badges -->
+    <div id="activeFilterBadges" class="mb-6 flex flex-wrap gap-2 hidden"></div>
+
+    <!-- Main content grid -->
+    <div class="main-content">
+      <!-- Sidebar filters (desktop) -->
+      <aside class="hidden lg:block scroll-reveal">
+        <div class="sidebar-filters bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-lg font-bold text-slate-900">Filters</h2>
+            <button id="clearAll" class="text-sm text-blue-600 hover:text-blue-700 font-medium">Clear All</button>
+          </div>
+
+          <!-- Categories -->
+          <div class="filter-section">
+            <div class="filter-section-title">Categories</div>
+            <div id="categoryFilters">
+              <label class="filter-option">
+                <input type="checkbox" value="Technology" data-type="category">
+                <span>Technology</span>
+                <span class="count">2</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" value="Design" data-type="category">
+                <span>Design</span>
+                <span class="count">1</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" value="Business" data-type="category">
+                <span>Business</span>
+                <span class="count">1</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" value="Health" data-type="category">
+                <span>Health</span>
+                <span class="count">1</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" value="Travel" data-type="category">
+                <span>Travel</span>
+                <span class="count">1</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" value="Education" data-type="category">
+                <span>Education</span>
+                <span class="count">1</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Tags -->
+          <div class="filter-section">
+            <div class="filter-section-title">Popular Tags</div>
+            <div id="tagFilters">
+              <label class="filter-option">
+                <input type="checkbox" value="remote-work" data-type="tag">
+                <span>Remote Work</span>
+                <span class="count">2</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" value="ai-ml" data-type="tag">
+                <span>AI & ML</span>
+                <span class="count">1</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" value="sustainability" data-type="tag">
+                <span>Sustainability</span>
+                <span class="count">1</span>
+              </label>
+              <label class="filter-option">
+                <input type="checkbox" value="productivity" data-type="tag">
+                <span>Productivity</span>
+                <span class="count">3</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Sort (desktop) -->
+          <div class="filter-section">
+            <div class="filter-section-title">Sort By</div>
+            <select id="sortSelect" class="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white font-medium">
+              <option value="new">Newest First</option>
+              <option value="old">Oldest First</option>
+              <option value="popular">Most Popular</option>
+            </select>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Posts feed -->
+      <div>
+        <div class="mb-4 flex items-center justify-between">
+          <p class="text-slate-600 text-sm"><span id="resultCount">7</span> articles found</p>
+        </div>
+
+        <section id="posts" class="post-feed">
+          <!-- Posts will be paginated -->
+        </section>
+
+        <div id="noResults" class="text-center py-12 hidden scroll-reveal">
+          <i class="bi bi-search text-4xl text-slate-300 mb-4"></i>
+          <p class="text-slate-500 text-lg">No articles match your filters.</p>
+        </div>
+
+        <!-- Pagination -->
+        <div id="pagination" class="pagination"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Mobile filter drawer -->
+  <div id="filterDrawer" class="filter-drawer">
+    <div class="filter-drawer-header">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold">Filters</h2>
+        <button id="closeDrawer" class="text-2xl text-slate-500 hover:text-slate-700">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+      <button id="clearAllMobile" class="text-sm text-blue-600 hover:text-blue-700 font-medium">Clear All</button>
+    </div>
+
+    <div class="p-6 pt-0">
+      <!-- Categories (mobile) -->
+      <div class="filter-section">
+        <div class="filter-section-title">Categories</div>
+        <div id="categoryFiltersMobile">
+          <label class="filter-option">
+            <input type="checkbox" value="Technology" data-type="category">
+            <span>Technology</span>
+            <span class="count">2</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="Design" data-type="category">
+            <span>Design</span>
+            <span class="count">1</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="Business" data-type="category">
+            <span>Business</span>
+            <span class="count">1</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="Health" data-type="category">
+            <span>Health</span>
+            <span class="count">1</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="Travel" data-type="category">
+            <span>Travel</span>
+            <span class="count">1</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="Education" data-type="category">
+            <span>Education</span>
+            <span class="count">1</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Tags (mobile) -->
+      <div class="filter-section">
+        <div class="filter-section-title">Popular Tags</div>
+        <div id="tagFiltersMobile">
+          <label class="filter-option">
+            <input type="checkbox" value="remote-work" data-type="tag">
+            <span>Remote Work</span>
+            <span class="count">2</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="ai-ml" data-type="tag">
+            <span>AI & ML</span>
+            <span class="count">1</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="sustainability" data-type="tag">
+            <span>Sustainability</span>
+            <span class="count">1</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" value="productivity" data-type="tag">
+            <span>Productivity</span>
+            <span class="count">3</span>
+          </label>
+        </div>
+      </div>
+
+      <button id="applyFilters" class="w-full mt-6 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg font-semibold hover:shadow-lg transition">
+        Apply Filters
+      </button>
+    </div>
+  </div>
+  <script type="module" src="{% static 'js/blog.js' %}" defer></script>
+{% endblock %}
