@@ -1,4 +1,5 @@
 from django.db import models
+from tinymce.models import HTMLField
 
 class Tags(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -18,7 +19,7 @@ class Category(models.Model):
 class BlogPost(models.Model):
     banner = models.ImageField(upload_to='blog_banners/')
     title = models.CharField(max_length=200)
-    content = models.TextField()
+    content = HTMLField()
     published_date = models.DateTimeField(auto_now_add=True)
 
     # relation ships

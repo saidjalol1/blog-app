@@ -47,6 +47,39 @@ INSTALLED_APPS = [
     'tinymce'
 
 ]
+# https://cdn.jsdelivr.net/gh/saidjalol1/blog-assets@main/nik-iurev-AAWW9uFQ1hY-unsplash.jpg
+TINYMCE_DEFAULT_CONFIG = {
+    'height': 600,
+    'width': '100%',
+    'menubar': True,
+    'plugins': [
+        'advlist',
+        'autolink',
+        'lists',
+        'link',
+        'image',
+        'charmap',
+        'preview',
+        'anchor',
+        'searchreplace',
+        'visualblocks',
+        'code',
+        'fullscreen',
+        'insertdatetime',
+        'media',
+        'table',
+        'help',
+        'wordcount',
+    ],
+    'toolbar': (
+        'undo redo | formatselect | '
+        'bold italic underline | forecolor backcolor | '
+        'alignleft aligncenter alignright alignjustify | '
+        'bullist numlist outdent indent | '
+        'removeformat | code fullscreen'
+    ),
+    'image_uploadtab': True,
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
