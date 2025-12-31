@@ -37,14 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    
     # My apps
     "home.apps.HomeConfig",
     "blog.apps.BlogConfig",
     "about.apps.AboutConfig",
 
     # Tools
-    'tinymce'
+    "tinymce",
+    "debug_toolbar"
 
 ]
 # https://cdn.jsdelivr.net/gh/saidjalol1/blog-assets@main/nik-iurev-AAWW9uFQ1hY-unsplash.jpg
@@ -89,9 +90,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = 'config.urls'
+
+INTERNAL_IPS = ["127.0.0.1"]
 
 TEMPLATES = [
     {
