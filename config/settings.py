@@ -93,6 +93,15 @@ MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
+# Try to insert WhiteNoise only if available so tests/dev don't break when it's not installed
+try:
+    import whitenoise  # noqa
+except Exception:
+    pass
+else:
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 ROOT_URLCONF = 'config.urls'
 
 INTERNAL_IPS = ["127.0.0.1"]

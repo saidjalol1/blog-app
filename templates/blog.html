@@ -1,5 +1,10 @@
 {% extends 'wrapper.html' %}
 {% load static %}
+{% block title %}Articles · My Logo{% endblock %}
+{% block extra_head %}
+  <meta name="description" content="Explore our articles filtered by topic and tag. Discover latest posts on technology, design and more.">
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+{% endblock %}
 
 {% block content %}
   <main class="pt-24 pb-12 max-w-7xl mx-auto px-4">
@@ -71,7 +76,35 @@
         </div>
 
         <section id="posts" class="post-feed">
-          <!-- Posts will be paginated -->
+          <!-- Server-side rendered first page for SEO/fallback -->
+          {% if initial_posts %}
+            {% for post in initial_posts %}
+              <article class="post-card post-item modern-card scroll-reveal active" data-slug="{{ post.slug }}">
+                <div class="post-img">
+                  {% if post.img %}
+                    <img src="{{ post.img }}" alt="{{ post.title }}" loading="lazy" decoding="async" />
+                  {% endif %}
+                </div>
+                <div class="post-content">
+                  <div>
+                    <div class="post-meta">
+                      <div class="tag">{{ post.category|default:'' }}</div>
+                      <div class="meta-right"><i class="bi bi-calendar3"></i> {{ post.date|date:"M d, Y" }} <span>•</span> <i class="bi bi-eye"></i> {{ post.views|default:0 }}</div>
+                    </div>
+                    <h3 class="post-title mt-2"><a href="{% url 'blog:blog_post_detail' post.slug %}" class="hover:underline text-slate-900">{{ post.title }}</a></h3>
+                    <p class="excerpt">{{ post.excerpt }}</p>
+                  </div>
+                  <div class="flex items-center justify-between mt-4">
+                    <div class="flex items-center gap-3">
+                      <div class="avatar"><img src="{{ post.avatar|default:'' }}" alt="" loading="lazy"></div>
+                      <div><div class="text-sm font-medium text-slate-700">{{ post.author|default:'Author' }}</div><div class="text-xs text-slate-500">{{ post.read|default:'' }}</div></div>
+                    </div>
+                    <a href="{% url 'blog:blog_post_detail' post.slug %}" class="inline-flex items-center gap-2 text-blue-600 font-semibold hover:gap-3 transition-all group"><span>Read</span><i class="bi bi-arrow-right group-hover:translate-x-1 transition-transform"></i></a>
+                  </div>
+                </div>
+              </article>
+            {% endfor %}
+          {% endif %}
         </section>
 
         <div id="noResults" class="text-center py-12 hidden scroll-reveal">
@@ -115,5 +148,13 @@
       </button>
     </div>
   </div>
+  {% if initial_posts %}
+    {{ initial_posts|json_script:"initialPosts" }}
+    <script>window.initialPosts = JSON.parse(document.getElementById('initialPosts').textContent);</script>
+  {% endif %}
+  {% if initial_filters %}
+    {{ initial_filters|json_script:'initialFilters' }}
+    <script>window.initialFilters = JSON.parse(document.getElementById('initialFilters').textContent);</script>
+  {% endif %}
   <script type="module" src="{% static 'js/blog.js' %}" defer></script>
 {% endblock %}

@@ -1,8 +1,34 @@
 {% extends 'wrapper.html' %}
+{% block title %}{{ post.title }} · My Logo{% endblock %}
+{% block extra_head %}
+  {% if post %}
+      <meta name="description" content="{{ meta_description }}">
+      <meta property="og:title" content="{{ post.title }}">
+      <meta property="og:description" content="{{ meta_description }}">
+      <meta property="og:type" content="article">
+      {% if meta_image %}<meta property="og:image" content="{{ meta_image }}">{% endif %}
+      <meta name="twitter:card" content="summary_large_image">
+      <link rel="canonical" href="{{ canonical }}">
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "{{ post.title }}",
+        "description": "{{ meta_description }}",
+        "datePublished": "{{ post.published_date|date:"Y-m-d" }}",
+        "image": {% if meta_image %}"{{ meta_image }}"{% else %}null{% endif %},
+        "author": { "@type": "Person", "name": "My Logo" },
+        "mainEntityOfPage": { "@type": "WebPage", "@id": "{{ canonical }}" }
+      }
+      </script>
+  {% endif %}
+{% endblock %}
+
 {% block content %}
 {% load static %}
   <div class="reading-progress" id="readingProgress"></div>
   <main class="max-w-4xl mx-auto px-2" >
+    <article class="max-w-3xl mx-auto py-20">
     <article class="max-w-3xl mx-auto py-20">
       {% if post %}
         <header class="mb-6">
@@ -10,7 +36,7 @@
           <div class="mt-2 text-sm text-slate-500">{{ post.published_date|date:"F j, Y" }} • {{ post.category.name }}</div>
         </header>
         {% if post.banner %}
-          <figure class="mb-6"><img src="{{ post.banner.url }}" alt="{{ post.title }} banner" class="w-full rounded-lg"/></figure>
+          <figure class="mb-6"><img src="{{ post.banner.url }}" alt="{{ post.title }} banner" class="w-full rounded-lg" loading="lazy" decoding="async"/></figure>
         {% endif %}
 
         <div class="prose max-w-none">{{ post.content|safe }}</div>

@@ -11,7 +11,75 @@ from .models import BlogPost, Category
 
 
 def blog_page(request):
-    return render(request, 'blog.html')
+    # Server-render the first page for SEO and client fallback and respect URL filters
+    POSTS_PER_PAGE = 5
+    try:
+        page = int(request.GET.get('page', 1))
+    except (TypeError, ValueError):
+        page = 1
+
+    q = request.GET.get('q', '').strip()
+    categories = [c for c in request.GET.get('categories', '').split(',') if c]
+    tags = [t for t in request.GET.get('tags', '').split(',') if t]
+    sort = request.GET.get('sort', 'new')
+
+    qs = BlogPost.objects.select_related('category').prefetch_related('tags')
+
+    if categories:
+        qs = qs.filter(category__name__in=categories)
+    if tags:
+        qs = qs.filter(tags__name__in=tags)
+    if q:
+        qs = qs.filter(Q(title__icontains=q) | Q(content__icontains=q))
+
+    qs = qs.distinct()
+
+    if sort == 'old':
+        qs = qs.order_by('published_date')
+    elif sort == 'popular':
+        qs = qs.order_by('-comments__count', '-published_date')
+    else:
+        qs = qs.order_by('-published_date')
+
+    paginator = Paginator(qs, POSTS_PER_PAGE)
+    try:
+        page_obj = paginator.page(page)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+
+    def short_post(p):
+        excerpt = strip_tags(p.content)[:240].strip()
+        if len(excerpt) == 240:
+            excerpt = excerpt.rsplit(' ', 1)[0] + '…'
+        return {
+            'id': p.id,
+            'slug': p.slug,
+            'title': p.title,
+            'excerpt': excerpt,
+            'content': strip_tags(p.content),
+            'img': request.build_absolute_uri(p.banner.url) if p.banner and hasattr(p.banner, 'url') else '',
+            'date': p.published_date.isoformat(),
+            'views': p.comments.count(),
+            'tags': [t.name for t in p.tags.all()],
+            'category': p.category.name if p.category else None,
+        }
+
+    initial_posts = [short_post(p) for p in page_obj.object_list]
+
+    initial_filters = {'categories': categories, 'tags': tags, 'q': q, 'sort': sort}
+
+    context = {
+        'initial_posts': initial_posts,
+        'page': page_obj.number,
+        'total': paginator.count,
+        'total_pages': paginator.num_pages,
+        'selected_categories': categories,
+        'selected_tags': tags,
+        'search_query': q,
+        'sort': sort,
+        'initial_filters': initial_filters,
+    }
+    return render(request, 'blog.html', context)
 
 
 @require_GET
@@ -126,12 +194,14 @@ def blog_post_json(request, slug):
 
     from django.db.models import Count
     views_count = post.comments.count()
+    desc = strip_tags(post.content)[:160]
     data = {
         'id': post.id,
         'slug': post.slug,
         'title': post.title,
         'content_html': post.content,
         'excerpt': strip_tags(post.content)[:240],
+        'description': desc,
         'img': request.build_absolute_uri(post.banner.url) if post.banner and hasattr(post.banner, 'url') else '',
         'date': post.published_date.isoformat(),
         'tags': [t.name for t in post.tags.all()],
@@ -140,6 +210,7 @@ def blog_post_json(request, slug):
         'author': '',
         'avatar': '',
         'read': '',
+        'canonical': request.build_absolute_uri(),
     }
     return JsonResponse(data, json_dumps_params={'ensure_ascii': False})
 
@@ -151,9 +222,16 @@ def blog_post_detail(request, slug):
 
     comments = post.comments.select_related('author').order_by('-created_at')[:50]
 
+    meta_description = strip_tags(post.content)[:160]
+    meta_image = request.build_absolute_uri(post.banner.url) if post.banner and hasattr(post.banner, 'url') else ''
+    canonical = request.build_absolute_uri()
+
     context = {
         'post': post,
         'comments': comments,
+        'meta_description': meta_description,
+        'meta_image': meta_image,
+        'canonical': canonical,
     }
     return render(request, 'blog-detail.html', context)
 

@@ -50,22 +50,21 @@
             <div>
                 <h3 class="text-lg font-bold mb-6">Quick Links</h3>
                 <ul class="space-y-4">
-                    <li><a href="#" class="text-slate-400 hover:text-white transition">Home</a></li>
-                    <li><a href="#" class="text-slate-400 hover:text-white transition">Articles</a></li>
-                    <li><a href="#" class="text-slate-400 hover:text-white transition">Categories</a></li>
-                    <li><a href="#" class="text-slate-400 hover:text-white transition">About Us</a></li>
-                    <li><a href="#" class="text-slate-400 hover:text-white transition">Contact</a></li>
+                    <li><a href="{% url 'home:home_page' %}" class="text-slate-400 hover:text-white transition">Home</a></li>
+                    <li><a href="{% url 'blog:blog_page' %}" class="text-slate-400 hover:text-white transition">Articles</a></li>
+                    <li><a href="#cats" class="text-slate-400 hover:text-white transition">Categories</a></li>
+                    <li><a href="{% url 'about:about_page' %}" class="text-slate-400 hover:text-white transition">About Us</a></li>
                 </ul>
             </div>
 
             <div>
                 <h3 class="text-lg font-bold mb-6">Top Categories</h3>
                 <ul class="space-y-4">
-                    <li><a href="#" class="text-slate-400 hover:text-white transition">Technology</a></li>
-                    <li><a href="#" class="text-slate-400 hover:text-white transition">Business</a></li>
-                    <li><a href="#" class="text-slate-400 hover:text-white transition">Design</a></li>
-                    <li><a href="#" class="text-slate-400 hover:text-white transition">Health</a></li>
-                    <li><a href="#" class="text-slate-400 hover:text-white transition">Travel</a></li>
+                    <li><a href="{% url 'blog:blog_page' %}?categories=Technology" class="text-slate-400 hover:text-white transition">Technology</a></li>
+                    <li><a href="{% url 'blog:blog_page' %}?categories=Business" class="text-slate-400 hover:text-white transition">Business</a></li>
+                    <li><a href="{% url 'blog:blog_page' %}?categories=Design" class="text-slate-400 hover:text-white transition">Design</a></li>
+                    <li><a href="{% url 'blog:blog_page' %}?categories=Health" class="text-slate-400 hover:text-white transition">Health</a></li>
+                    <li><a href="{% url 'blog:blog_page' %}?categories=Travel" class="text-slate-400 hover:text-white transition">Travel</a></li>
                 </ul>
             </div>
 
@@ -76,11 +75,6 @@
             <p class="text-slate-500 text-sm mb-4 md:mb-0">
                 &copy; 2025 My Logo Blog. All rights reserved.
             </p>
-            <div class="flex space-x-6 text-sm text-slate-500">
-                <a href="#" class="hover:text-white transition">Privacy Policy</a>
-                <a href="#" class="hover:text-white transition">Terms of Service</a>
-                <a href="#" class="hover:text-white transition">Cookie Policy</a>
-            </div>
         </div>
     </div>
 </footer>

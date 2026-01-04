@@ -1,4 +1,17 @@
 {% extends 'wrapper.html' %}
+{% block title %}Home · My Logo{% endblock %}
+{% block extra_head %}
+  <meta name="description" content="Latest articles and curated insights on technology, business, design and lifestyle">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "url": "{{ request.build_absolute_uri }}",
+    "name": "My Logo",
+    "description": "A modern blog delivering quality content on technology, business, design and lifestyle"
+  }
+  </script>
+{% endblock %}
 
 {% block content %}
     <!-- Hero Section with Slider -->
@@ -9,7 +22,7 @@
                     <span class="w-1 h-8 bg-blue-500 mr-3 rounded-full"></span>
                     Top🔥
                 </h2>
-                <a href="#" class="flex items-center text-blue-600 hover:text-blue-700 font-semibold">
+                <a href="{% url 'blog:blog_page' %}" class="flex items-center text-blue-600 hover:text-blue-700 font-semibold">
                     All <i class="bi bi-arrow-right ml-2"></i>
                 </a>
             </div>
@@ -27,80 +40,28 @@
 
                 <!-- Slider wrapper -->
                 <div id="featuredSlider" class="flex transition-transform duration-500 ease-in-out mt-5">
-                    <!-- Slide 1 -->
-                    <div class="slider-item flex-none w-full">
-                        <div class="modern-card asymmetric-card card-hover relative h-96 overflow-hidden cursor-pointer group"
-                            onclick="goToArticle('travel-tips-2025')">
-                            <img src="https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=1200" alt="Travel"
-                                class="w-full h-full object-cover">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent">
-                            </div>
-                            <div class="absolute bottom-0 p-8 text-white">
-                                <div class="flex items-center space-x-4 mb-4">
-                                    <span
-                                        class="flex items-center text-sm bg-blue-500/20 backdrop-blur-sm px-3 py-1 rounded-full"><i
-                                            class="bi bi-eye mr-1"></i> 2.5k</span>
-                                    <span
-                                        class="flex items-center text-sm bg-slate-800/40 backdrop-blur-sm px-3 py-1 rounded-full"><i
-                                            class="bi bi-calendar mr-1"></i> Jan 27, 2025</span>
-                                </div>
-                                <h3 class="text-3xl font-bold mb-3 group-hover:text-blue-300 transition">Mind Blowing
-                                    Travel Destinations You Need to Visit</h3>
-                                <p class="text-sm opacity-90">By Saidjafar Turg'unboev</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Slide 2 -->
+                    {% for post in featured_posts %}
                     <div class="slider-item flex-none w-full px-2">
-                        <div class="modern-card asymmetric-card card-hover relative h-96 overflow-hidden cursor-pointer group"
-                            onclick="goToArticle('the-ai-revolution')">
-                            <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200" alt="AI"
-                                class="w-full h-full object-cover">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent">
-                            </div>
+                        <div class="modern-card asymmetric-card card-hover relative h-96 overflow-hidden cursor-pointer group" onclick="window.location.href='{% url 'blog:blog_post_detail' post.slug %}'">
+                            {% if post.banner %}
+                                <img src="{{ post.banner.url }}" alt="{{ post.title }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                            {% else %}
+                                <img src="https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=1200" alt="{{ post.title }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                            {% endif %}
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent"></div>
                             <div class="absolute bottom-0 p-8 text-white">
                                 <div class="flex items-center space-x-4 mb-4">
-                                    <span
-                                        class="flex items-center text-sm bg-blue-500/20 backdrop-blur-sm px-3 py-1 rounded-full"><i
-                                            class="bi bi-eye mr-1"></i> 3.2k</span>
-                                    <span
-                                        class="flex items-center text-sm bg-slate-800/40 backdrop-blur-sm px-3 py-1 rounded-full"><i
-                                            class="bi bi-calendar mr-1"></i> Jan 26, 2025</span>
+                                    <span class="flex items-center text-sm bg-blue-500/20 backdrop-blur-sm px-3 py-1 rounded-full"><i class="bi bi-eye mr-1"></i> {{ post.comments.count|default:0 }}</span>
+                                    <span class="flex items-center text-sm bg-slate-800/40 backdrop-blur-sm px-3 py-1 rounded-full"><i class="bi bi-calendar mr-1"></i> {{ post.published_date|date:"M d, Y" }}</span>
                                 </div>
-                                <h3 class="text-3xl font-bold mb-3 group-hover:text-blue-300 transition">The AI
-                                    Revolution: How Machine Learning is Changing Everything</h3>
-                                <p class="text-sm opacity-90">By Michael Chen</p>
+                                <h3 class="text-3xl font-bold mb-3 group-hover:text-blue-300 transition">{{ post.title }}</h3>
+                                <p class="text-sm opacity-90">{{ post.category.name }}</p>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Slide 3 -->
-                    <div class="slider-item flex-none w-full px-2">
-                        <div class="modern-card asymmetric-card card-hover relative h-96 overflow-hidden cursor-pointer group"
-                            onclick="goToArticle('designing-a-sustainable-future')">
-                            <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1200" alt="Nature"
-                                class="w-full h-full object-cover">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent">
-                            </div>
-                            <div class="absolute bottom-0 p-8 text-white">
-                                <div class="flex items-center space-x-4 mb-4">
-                                    <span
-                                        class="flex items-center text-sm bg-blue-500/20 backdrop-blur-sm px-3 py-1 rounded-full"><i
-                                            class="bi bi-eye mr-1"></i> 1.8k</span>
-                                    <span
-                                        class="flex items-center text-sm bg-slate-800/40 backdrop-blur-sm px-3 py-1 rounded-full"><i
-                                            class="bi bi-calendar mr-1"></i> Jan 25, 2025</span>
-                                </div>
-                                <h3 class="text-3xl font-bold mb-3 group-hover:text-blue-300 transition">Building a
-                                    Sustainable Future: Green Technology Innovations</h3>
-                                <p class="text-sm opacity-90">By Emma Watson</p>
-                            </div>
-                        </div>
-                    </div>
+                    {% empty %}
+                    <!-- no featured posts -->
+                    {% endfor %}
                 </div>
 
                 <div class="slider-dots flex justify-center mt-6" id="featuredDots"></div>
@@ -109,7 +70,7 @@
     </section>
 
     <!-- Categories Section -->
-    <section class="py-16 px-4 bg-white">
+    <section id="cats" class="py-10 px-2 bg-white">
         <div class="max-w-7xl mx-auto">
             <h2 class="text-2xl font-bold text-slate-800 mb-10 flex items-center scroll-reveal">
                 <span class="w-1 h-8 bg-blue-500 mr-3 rounded-full"></span>
@@ -117,71 +78,24 @@
             </h2>
 
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                <div class="scroll-reveal modern-card h-40 rounded-2xl overflow-hidden cursor-pointer transform hover:scale-[1.03] transition-all duration-300 relative group"
-                    style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400'); background-size: cover; background-position: center;">
-                    <div class="absolute inset-0 bg-gradient-to-t from-blue-900/80 to-blue-500/40"></div>
+                {% for cat in categories %}
+                <div class="scroll-reveal modern-card h-40 rounded-2xl overflow-hidden cursor-pointer transform hover:scale-[1.03] transition-all duration-300 relative group" onclick="window.location.href='{% url 'blog:blog_page' %}?categories={{ cat.name|urlencode }}'" style="background-image: url('{{ cat.image.url }}'); background-size: cover; background-position: center;">
+                    <div class="absolute inset-0 bg-gradient-to-t from-blue-900/80 to-blue-200/40"></div>
                     <div class="absolute bottom-0 p-5 text-white z-10 w-full">
-                        <i class="bi bi-code-slash text-3xl mb-2 group-hover:scale-110 transition-transform"></i>
-                        <h3 class="font-bold text-lg">Technology</h3>
-                        <p class="text-sm opacity-90">124 articles</p>
+                        <i class="bi bi-folder text-3xl mb-2 group-hover:scale-110 transition-transform"></i>
+                        <h3 class="font-bold text-lg">{{ cat.name }}</h3>
+                        <p class="text-sm opacity-90">{{ cat.post_count|default:0 }} articles</p>
                     </div>
                 </div>
-
-                <div class="scroll-reveal modern-card h-40 rounded-2xl overflow-hidden cursor-pointer transform hover:scale-[1.03] transition-all duration-300 relative group"
-                    style="background-image: url('https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400'); background-size: cover; background-position: center;">
-                    <div class="absolute inset-0 bg-gradient-to-t from-pink-900/80 to-pink-500/40"></div>
-                    <div class="absolute bottom-0 p-5 text-white z-10 w-full">
-                        <i class="bi bi-palette text-3xl mb-2 group-hover:scale-110 transition-transform"></i>
-                        <h3 class="font-bold text-lg">Design</h3>
-                        <p class="text-sm opacity-90">89 articles</p>
-                    </div>
-                </div>
-
-                <div class="scroll-reveal modern-card h-40 rounded-2xl overflow-hidden cursor-pointer transform hover:scale-[1.03] transition-all duration-300 relative group"
-                    style="background-image: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400'); background-size: cover; background-position: center;">
-                    <div class="absolute inset-0 bg-gradient-to-t from-blue-900/80 to-blue-500/40"></div>
-                    <div class="absolute bottom-0 p-5 text-white z-10 w-full">
-                        <i class="bi bi-briefcase text-3xl mb-2 group-hover:scale-110 transition-transform"></i>
-                        <h3 class="font-bold text-lg">Business</h3>
-                        <p class="text-sm opacity-90">156 articles</p>
-                    </div>
-                </div>
-
-                <div class="scroll-reveal modern-card h-40 rounded-2xl overflow-hidden cursor-pointer transform hover:scale-[1.03] transition-all duration-300 relative group"
-                    style="background-image: url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400'); background-size: cover; background-position: center;">
-                    <div class="absolute inset-0 bg-gradient-to-t from-green-900/80 to-green-500/40"></div>
-                    <div class="absolute bottom-0 p-5 text-white z-10 w-full">
-                        <i class="bi bi-heart-pulse text-3xl mb-2 group-hover:scale-110 transition-transform"></i>
-                        <h3 class="font-bold text-lg">Health</h3>
-                        <p class="text-sm opacity-90">98 articles</p>
-                    </div>
-                </div>
-
-                <div class="scroll-reveal modern-card h-40 rounded-2xl overflow-hidden cursor-pointer transform hover:scale-[1.03] transition-all duration-300 relative group"
-                    style="background-image: url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400'); background-size: cover; background-position: center;">
-                    <div class="absolute inset-0 bg-gradient-to-t from-orange-900/80 to-orange-500/40"></div>
-                    <div class="absolute bottom-0 p-5 text-white z-10 w-full">
-                        <i class="bi bi-airplane text-3xl mb-2 group-hover:scale-110 transition-transform"></i>
-                        <h3 class="font-bold text-lg">Travel</h3>
-                        <p class="text-sm opacity-90">67 articles</p>
-                    </div>
-                </div>
-
-                <div class="scroll-reveal modern-card h-40 rounded-2xl overflow-hidden cursor-pointer transform hover:scale-[1.03] transition-all duration-300 relative group"
-                    style="background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400'); background-size: cover; background-position: center;">
-                    <div class="absolute inset-0 bg-gradient-to-t from-indigo-900/80 to-indigo-500/40"></div>
-                    <div class="absolute bottom-0 p-5 text-white z-10 w-full">
-                        <i class="bi bi-book text-3xl mb-2 group-hover:scale-110 transition-transform"></i>
-                        <h3 class="font-bold text-lg">Education</h3>
-                        <p class="text-sm opacity-90">143 articles</p>
-                    </div>
-                </div>
+                {% empty %}
+                <div class="text-slate-500">No categories yet.</div>
+                {% endfor %}
             </div>
         </div>
     </section>
 
     <!-- Latest Articles with Slider -->
-    <section class="py-16 px-4 bg-gradient-to-br from-slate-50 to-blue-50/30">
+    <section class="py-10 px-2 bg-gradient-to-br from-slate-50 to-blue-50/30">
         <div class="max-w-7xl mx-auto">
 
             <!-- Header -->
@@ -209,139 +123,34 @@
                 <!-- Slider Track -->
                 <div id="latestSlider" class="flex transition-transform duration-500 ease-in-out">
 
-                    <!-- CARD 1 -->
-                    <div class="slider-item-latest">
-                        <div
-                            class="group bg-white rounded-3xl shadow-sm hover:shadow-xl overflow-hidden transition-all duration-300 border border-slate-100">
+                        {% for post in latest_posts %}
+                    <div class="slider-item-latest lg:mx-2">
+                        <div class="group bg-white rounded-3xl shadow-sm hover:shadow-xl overflow-hidden transition-all duration-300 border border-slate-100">
                             <div class="relative overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800"
-                                    class="h-48 sm:h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105">
-                                <div
-                                    class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                </div>
+                                {% if post.banner %}
+                                    <img src="{{ post.banner.url }}" loading="lazy" decoding="async" class="h-48 sm:h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105" alt="{{ post.title }}" />
+                                {% else %}
+                                    <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800" loading="lazy" decoding="async" class="h-48 sm:h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105" alt="{{ post.title }}" />
+                                {% endif %}
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                             </div>
                             <div class="p-5 sm:p-6">
-                                <h3
-                                    class="font-bold text-lg sm:text-xl mb-2 text-slate-900 group-hover:text-blue-600 transition-colors duration-300">
-                                    Remote-First Companies
-                                </h3>
-                                <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-4">
-                                    How distributed teams succeed in the modern workplace.
-                                </p>
-                                <div
-                                    class="flex items-center text-blue-600 text-sm font-semibold group-hover:gap-2 transition-all duration-300">
-                                    <span>Read more</span>
-                                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300"
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </div>
+                                <h3 class="font-bold text-lg sm:text-xl mb-2 text-slate-900 group-hover:text-blue-600 transition-colors duration-300">{{ post.title }}</h3>
+                                <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-4">{{ post.content|striptags|truncatechars:140 }}</p>
+                                <div class="flex items-center text-blue-600 text-sm font-semibold group-hover:gap-2 transition-all duration-300"><a href="{% url 'blog:blog_post_detail' post.slug %}">Read more</a><svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg></div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- CARD 2 -->
-                    <div class="slider-item-latest">
-                        <div
-                            class="group bg-white rounded-3xl shadow-sm hover:shadow-xl overflow-hidden transition-all duration-300 border border-slate-100">
-                            <div class="relative overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800"
-                                    class="h-48 sm:h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105">
-                                <div
-                                    class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                </div>
-                            </div>
-                            <div class="p-5 sm:p-6">
-                                <h3
-                                    class="font-bold text-lg sm:text-xl mb-2 text-slate-900 group-hover:text-blue-600 transition-colors duration-300">
-                                    Remote-First Companies
-                                </h3>
-                                <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-4">
-                                    How distributed teams succeed in the modern workplace.
-                                </p>
-                                <div
-                                    class="flex items-center text-blue-600 text-sm font-semibold group-hover:gap-2 transition-all duration-300">
-                                    <span>Read more</span>
-                                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300"
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CARD 3 -->
-                    <div class="slider-item-latest">
-                        <div
-                            class="group bg-white rounded-3xl shadow-sm hover:shadow-xl overflow-hidden transition-all duration-300 border border-slate-100">
-                            <div class="relative overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800"
-                                    class="h-48 sm:h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105">
-                                <div
-                                    class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                </div>
-                            </div>
-                            <div class="p-5 sm:p-6">
-                                <h3
-                                    class="font-bold text-lg sm:text-xl mb-2 text-slate-900 group-hover:text-blue-600 transition-colors duration-300">
-                                    Remote-First Companies
-                                </h3>
-                                <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-4">
-                                    How distributed teams succeed in the modern workplace.
-                                </p>
-                                <div
-                                    class="flex items-center text-blue-600 text-sm font-semibold group-hover:gap-2 transition-all duration-300">
-                                    <span>Read more</span>
-                                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300"
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- CARD 4 -->
-                    <div class="slider-item-latest">
-                        <div
-                            class="group bg-white rounded-3xl shadow-sm hover:shadow-xl overflow-hidden transition-all duration-300 border border-slate-100">
-                            <div class="relative overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800"
-                                    class="h-48 sm:h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105">
-                                <div
-                                    class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                </div>
-                            </div>
-                            <div class="p-5 sm:p-6">
-                                <h3
-                                    class="font-bold text-lg sm:text-xl mb-2 text-slate-900 group-hover:text-blue-600 transition-colors duration-300">
-                                    Remote-First Companies
-                                </h3>
-                                <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-4">
-                                    How distributed teams succeed in the modern workplace.
-                                </p>
-                                <div
-                                    class="flex items-center text-blue-600 text-sm font-semibold group-hover:gap-2 transition-all duration-300">
-                                    <span>Read more</span>
-                                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300"
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {% empty %}
+                    <div class="text-slate-500">No recent posts yet.</div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Newsletter Section -->
-    <section class="py-16 px-4 bg-gradient-to-br from-blue-50 via-white to-blue-50/50">
+    <section class="py-10 px-2 bg-gradient-to-br from-blue-50 via-white to-blue-50/50">
         <div class="max-w-4xl mx-auto">
             <div
                 class="modern-card bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl border border-blue-100/50 overflow-hidden">

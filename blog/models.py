@@ -22,6 +22,8 @@ class BlogPost(models.Model):
     title = models.CharField(max_length=200)
     content = HTMLField()
     published_date = models.DateTimeField(auto_now_add=True)
+    # mark a small set of posts as featured for the home page
+    is_featured = models.BooleanField(default=False, db_index=True)
 
     # relation ships
     tags = models.ManyToManyField(Tags, related_name='blog_posts')

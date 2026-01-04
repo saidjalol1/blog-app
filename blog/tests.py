@@ -63,6 +63,8 @@ class FetchBlogsAPITest(TestCase):
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, post.title)
+        # Ensure OG meta tags are present for SEO
+        self.assertIn('<meta property="og:title"', resp.content.decode())
 
         urlj = reverse('blog:blog_post_json', args=[post.slug])
         respj = self.client.get(urlj)
@@ -71,3 +73,16 @@ class FetchBlogsAPITest(TestCase):
         self.assertEqual(data['id'], post.pk)
         self.assertEqual(data['title'], post.title)
         self.assertEqual(data.get('slug'), post.slug)
+
+    def test_blog_page_filters_by_category(self):
+        # Create two categories and posts
+        cat1 = Category.objects.create(name='FilteredCat', image='category_images/f1.jpg')
+        cat2 = Category.objects.create(name='OtherCat', image='category_images/f2.jpg')
+        p1 = BlogPost.objects.create(title='InCat', content='<p>in</p>', banner='blog_banners/a.jpg', category=cat1)
+        p2 = BlogPost.objects.create(title='OutCat', content='<p>out</p>', banner='blog_banners/b.jpg', category=cat2)
+        url = reverse('blog:blog_page') + '?categories=FilteredCat'
+        resp = self.client.get(url)
+        self.assertEqual(resp.status_code, 200)
+        html = resp.content.decode()
+        self.assertIn('InCat', html)
+        self.assertNotIn('OutCat', html)
