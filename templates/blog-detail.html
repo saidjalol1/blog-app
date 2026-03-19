@@ -33,7 +33,7 @@
       {% if post %}
         <header class="mb-6">
           <h1 class="text-3xl font-bold">{{ post.title }}</h1>
-          <div class="mt-2 text-sm text-slate-500">{{ post.published_date|date:"F j, Y" }} • {{ post.category.name }}</div>
+          <div class="mt-2 text-sm text-slate-500">{{ post.published_date|date:"F j, Y" }} • {{ post.category.name }} • {{ post.view_count }} views</div>
         </header>
         {% if post.banner %}
           <figure class="mb-6"><img src="{{ post.banner.url }}" alt="{{ post.title }} banner" class="w-full rounded-lg" loading="lazy" decoding="async"/></figure>
@@ -41,12 +41,38 @@
 
         <div class="prose max-w-none">{{ post.content|safe }}</div>
 
+        <div class="mt-6 flex items-center space-x-4">
+          <button type="button" id="likeBtn" data-slug="{{ post.slug }}" class="btn {% if user_liked %}btn-primary{% else %}btn-outline-primary{% endif %}">
+            <span class="like-icon">👍</span> Like <span id="likeCount">({{ likes_count }})</span>
+          </button>
+          <button type="button" id="dislikeBtn" data-slug="{{ post.slug }}" class="btn {% if user_disliked %}btn-danger{% else %}btn-outline-danger{% endif %}">
+            <span class="dislike-icon">👎</span> Dislike <span id="dislikeCount">({{ dislikes_count }})</span>
+          </button>
+        </div>
+
         <section id="comments" class="mt-12">
           <h2 class="text-lg font-semibold">Comments</h2>
+          <form method="post" class="mb-6">
+            {% csrf_token %}
+            <div class="mb-4">
+              <input type="text" name="first_name" class="w-full p-2 border rounded" placeholder="First Name" required>
+            </div>
+            <div class="mb-4">
+              <input type="text" name="last_name" class="w-full p-2 border rounded" placeholder="Last Name" required>
+            </div>
+            <textarea name="content" rows="4" class="w-full p-2 border rounded" placeholder="Add a comment..." required></textarea>
+            <button type="submit" class="mt-2 btn btn-primary">Post Comment</button>
+          </form>
           {% if comments %}
             <ul>
               {% for c in comments %}
-                <li class="py-4 border-b"><strong>{{ c.author.get_full_name }}</strong> <span class="text-xs text-slate-500">• {{ c.created_at|date:"F j, Y H:i" }}</span><p class="mt-2">{{ c.content|linebreaksbr }}</p></li>
+                <li class="py-4 border-b flex items-start space-x-3">
+                  <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ c.ip_address }}" alt="Avatar" class="w-10 h-10 rounded-full">
+                  <div>
+                    <strong>{{ c.first_name }} {{ c.last_name }}</strong> <span class="text-xs text-slate-500">• {{ c.created_at|date:"F j, Y H:i" }}</span>
+                    <p class="mt-2">{{ c.content|linebreaksbr }}</p>
+                  </div>
+                </li>
               {% endfor %}
             </ul>
           {% else %}
@@ -61,4 +87,5 @@
   </main>
 
   <script type="module" src="{% static 'js/blog-detail.js' %}" defer></script>
+  <script src="{% static 'js/engagement.js' %}" defer></script>
 {% endblock %}

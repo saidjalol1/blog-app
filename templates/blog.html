@@ -156,5 +156,9 @@
     {{ initial_filters|json_script:'initialFilters' }}
     <script>window.initialFilters = JSON.parse(document.getElementById('initialFilters').textContent);</script>
   {% endif %}
+  <script>
+    window.currentPage = {{ page }};
+    window.totalPages = {{ total_pages }};
+  </script>
   <script type="module" src="{% static 'js/blog.js' %}" defer></script>
 {% endblock %}

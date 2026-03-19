@@ -24,7 +24,8 @@ class BlogPostAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('author', 'blog_post', 'created_at')
-    list_filter = ('created_at',)
-    search_fields = ('author__username', 'content')
-    raw_id_fields = ('author', 'blog_post')
+    list_display = ('first_name', 'last_name', 'blog_post', 'created_at', 'is_approved')
+    list_filter = ('created_at', 'is_approved')
+    search_fields = ('first_name', 'last_name', 'content', 'visitor_id', 'ip_address')
+    raw_id_fields = ('blog_post',)
+    list_editable = ('is_approved',)

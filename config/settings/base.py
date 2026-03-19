@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -26,6 +26,11 @@ SECRET_KEY = 'django-insecure-%xefw+w5_ldq1$u5+9n-$m^=5p3(()zwwcvn^u+i*xg8&gqavh
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+
+# Auth settings
+LOGIN_REDIRECT_URL = 'blog:blog_page'
+LOGOUT_REDIRECT_URL = 'blog:blog_page'
 
 
 # Application definition
@@ -45,7 +50,8 @@ INSTALLED_APPS = [
 
     # Tools
     "tinymce",
-    "debug_toolbar"
+    "debug_toolbar",
+    "csp",  # Content Security Policy
 
 ]
 # https://cdn.jsdelivr.net/gh/saidjalol1/blog-assets@main/nik-iurev-AAWW9uFQ1hY-unsplash.jpg
@@ -86,16 +92,18 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'csp.middleware.CSPMiddleware',  # Content Security Policy
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'blog.middleware.ErrorLoggingMiddleware',  # Custom error logging
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
-# Try to insert WhiteNoise only if available so tests/dev don't break when it's not installed
+
 try:
-    import whitenoise  # noqa
+    import whitenoise 
 except Exception:
     pass
 else:
@@ -140,9 +148,21 @@ CACHES = {
         "LOCATION": "redis://127.0.0.1:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
+        },
+        "KEY_PREFIX": "blog",
+        "TIMEOUT": 300,  # Default TTL: 5 minutes
     }
 }
+
+# Cache TTL values (in seconds)
+CACHE_TTL = {
+    'blog_list': 300,  # 5 minutes
+    'filters': 900,  # 15 minutes
+    'post_detail': 300,  # 5 minutes
+}
+
+# Pagination settings
+BLOG_POSTS_PER_PAGE = 50  # Default pagination size for blog list
 
 
 # Password validation
@@ -192,3 +212,91 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Logging Configuration
+# https://docs.djangoproject.com/en/5.2/topics/logging/
+import os
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {asctime} {message}',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'file_errors': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'errors.log'),
+            'maxBytes': 1024 * 1024 * 10,  # 10 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+        },
+        'file_security': {
+            'level': 'WARNING',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'security.log'),
+            'maxBytes': 1024 * 1024 * 10,  # 10 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+        },
+        'file_general': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'general.log'),
+            'maxBytes': 1024 * 1024 * 10,  # 10 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file_general', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['file_errors', 'console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['file_security', 'console'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        'django.db.backends': {
+            'handlers': ['file_general'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'blog': {
+            'handlers': ['file_general', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
+
+# Slow query logging threshold (in seconds)
+SLOW_QUERY_THRESHOLD = 0.1  # 100ms

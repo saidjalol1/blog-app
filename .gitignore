@@ -100,3 +100,8 @@ MANIFEST
 # Docker
 # =========================
 docker-data/
+
+.k*
+.sqlite3
+*db
+.hyp*

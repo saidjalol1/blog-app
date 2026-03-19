@@ -22,23 +22,6 @@
                 </div>
             </div>
 
-            <div class="hidden lg:flex items-center space-x-4">
-                <a href="{% url 'home:home_page' %}" class="text-slate-700 hover:text-blue-600 transition font-medium">Home</a>
-                <a href="{% url 'blog:blog_page' %}" class="text-slate-700 hover:text-blue-600 transition font-medium">Blog</a>
-                <a href="{% url 'about:about_page' %}" class="text-slate-700 hover:text-blue-600 transition font-medium">About</a>
-                <div class="flex items-center space-x-3">
-                    <label for="langSelect" class="sr-only">Language</label>
-                    <select id="langSelect" class="border border-slate-200 rounded-lg px-3 py-2 bg-white text-sm">
-                        <option value="en">EN</option>
-                        <option value="es">ES</option>
-                        <option value="fr">FR</option>
-                    </select>
-                    <button
-                        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium shadow-md hover:shadow-lg">Sign
-                        In</button>
-                </div>
-            </div>
-
             <button id="mobileMenuToggle" class="lg:hidden text-slate-700" aria-controls="mobileMenu"
                 aria-expanded="false" aria-label="Toggle menu">
                 <i class="bi bi-list text-2xl"></i>
@@ -62,9 +45,6 @@
                         <option value="fr">FR</option>
                     </select>
                 </div>
-                <button
-                    class="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition font-medium">Sign
-                    In</button>
             </div>
         </div>
     </div>
