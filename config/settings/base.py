@@ -99,7 +99,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'blog.middleware.ErrorLoggingMiddleware',  # Custom error logging
-    
+
 ]
 
 # Content Security Policy (CSP) Configuration
@@ -110,6 +110,8 @@ CSP_SCRIPT_SRC = (
     "'unsafe-inline'",
     "cdn.tailwindcss.com",
     "cdn.jsdelivr.net",
+    "https://www.googletagmanager.com",
+    "https://www.google-analytics.com", 
 )
 CSP_STYLE_SRC = (
     "'self'",
