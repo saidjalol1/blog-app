@@ -42,7 +42,7 @@ ENV/
 # =========================
 # Static & Collected Files
 # =========================
-static/
+# static/
 assets/
 dist/
 build/
