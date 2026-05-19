@@ -1,0 +1,23 @@
+# robots.txt for SEO optimization
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /static/admin/
+Disallow: /__debug__/
+
+# Disallow API endpoints that shouldn't be indexed
+Disallow: /blogs/fetch_blogs/
+Disallow: /blogs/filters/
+Disallow: /blogs/post/*/json/
+Disallow: /blogs/post/*/like/
+Disallow: /blogs/post/*/dislike/
+
+# Allow media files (images)
+Allow: /media/
+
+# Sitemap location
+Sitemap: https://gayratxoldarov.uz/sitemap.xml
