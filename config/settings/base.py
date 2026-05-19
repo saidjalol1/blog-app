@@ -113,6 +113,22 @@ CSP_SCRIPT_SRC = (
     "https://www.googletagmanager.com",
     "https://www.google-analytics.com", 
 )
+
+CSP_CONNECT_SRC = (
+    "'self'",
+    "https://www.google-analytics.com",
+    "https://analytics.google.com",
+    "https://www.google.com",
+    "https://stats.g.doubleclick.net",
+)
+
+CSP_IMG_SRC = (
+    "'self'",
+    "data:",
+    "https://www.google-analytics.com",
+    "https://www.googletagmanager.com",
+)
+
 CSP_STYLE_SRC = (
     "'self'",
     "'unsafe-inline'",
@@ -124,12 +140,6 @@ CSP_FONT_SRC = (
     "cdn.jsdelivr.net",
     "fonts.gstatic.com",
 )
-CSP_IMG_SRC = (
-    "'self'",
-    "data:",
-    "https:",
-)
-CSP_CONNECT_SRC = ("'self'",)
 
 
 
