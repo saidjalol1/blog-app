@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-%xefw+w5_ldq1$u5+9n-$m^=5p3(()zwwcvn^u+i*xg8&gqavh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["gayratxoldarov.uz","www.gayratxoldarov.uz"]
+ALLOWED_HOSTS = ["gayratxoldarov.uz","www.gayratxoldarov.uz", "127.0.0.1"]
 
 
 # Auth settings
@@ -51,7 +51,7 @@ INSTALLED_APPS = [
 
     # Tools
     "tinymce",
-    "debug_toolbar",
+
     "csp",  # Content Security Policy
 
 ]
@@ -99,7 +99,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'blog.middleware.ErrorLoggingMiddleware',  # Custom error logging
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    
 ]
 
 # Content Security Policy (CSP) Configuration

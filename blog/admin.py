@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Tags, Category, BlogPost, Comment
+from .models import Tags, Category, BlogPost, Comment, Share
 from .forms import BlogPostAdminForm
 
 
@@ -106,3 +106,12 @@ class CommentAdmin(admin.ModelAdmin):
     search_fields = ('first_name', 'last_name', 'content', 'visitor_id', 'ip_address')
     raw_id_fields = ('blog_post',)
     list_editable = ('is_approved',)
+
+
+@admin.register(Share)
+class ShareAdmin(admin.ModelAdmin):
+    list_display = ('blog_post', 'platform', 'visitor_id', 'created_at')
+    list_filter = ('platform', 'created_at')
+    search_fields = ('blog_post__title', 'visitor_id')
+    raw_id_fields = ('blog_post',)
+    readonly_fields = ('created_at',)

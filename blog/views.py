@@ -284,6 +284,7 @@ def blog_post_detail(request, slug):
                 'user_disliked': user_disliked,
                 'likes_count': post.likes.count(),
                 'dislikes_count': post.dislikes.count(),
+                'shares_count': post.shares.count(),
                 'meta_description': SEOHelper.generate_meta_description(post.content),
                 'meta_image': request.build_absolute_uri(post.banner.url) if post.banner and hasattr(post.banner, 'url') else '',
                 'canonical': request.build_absolute_uri(),
@@ -316,6 +317,7 @@ def blog_post_detail(request, slug):
         'user_disliked': user_disliked,
         'likes_count': post.likes.count(),
         'dislikes_count': post.dislikes.count(),
+        'shares_count': post.shares.count(),
         'article_schema': json.dumps(article_schema),
         'breadcrumb_schema': json.dumps(breadcrumb_schema),
     }
@@ -457,3 +459,60 @@ def dislike_post(request, slug):
     
     return response
 
+
+@require_POST
+@transaction.atomic
+def share_post(request, slug):
+    """
+    Record a share action on a blog post.
+    
+    POST endpoint at /blog/post/<slug>/share/
+    Expects JSON body: { "platform": "twitter|facebook|linkedin|telegram|whatsapp|instagram|tiktok|copy_link|native" }
+    Returns JSON with share counts.
+    """
+    from .models import Share
+    
+    post = get_object_or_404(BlogPost, slug=slug)
+    
+    try:
+        body = json.loads(request.body)
+        platform = body.get('platform', '')
+    except (json.JSONDecodeError, AttributeError):
+        platform = request.POST.get('platform', '')
+    
+    valid_platforms = [c[0] for c in Share.PLATFORM_CHOICES]
+    if platform not in valid_platforms:
+        return JsonResponse({'error': 'Invalid platform'}, status=400)
+    
+    # Get or create visitor_id from cookie
+    response_obj = JsonResponse({})
+    visitor_id = CookieManager.get_or_create_visitor_id(request, response_obj)
+    
+    # Record the share
+    Share.objects.create(
+        blog_post=post,
+        platform=platform,
+        visitor_id=visitor_id,
+    )
+    
+    # Get total shares count
+    shares_count = post.shares.count()
+    
+    response = JsonResponse({
+        'status': 'ok',
+        'shares': shares_count,
+        'platform': platform,
+    })
+    
+    # Set visitor_id cookie if newly created
+    if CookieManager.VISITOR_ID_COOKIE not in request.COOKIES:
+        response.set_cookie(
+            key=CookieManager.VISITOR_ID_COOKIE,
+            value=visitor_id,
+            max_age=CookieManager.VISITOR_ID_MAX_AGE,
+            httponly=True,
+            secure=True,
+            samesite='Lax'
+        )
+    
+    return response

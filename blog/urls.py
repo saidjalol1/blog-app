@@ -13,5 +13,6 @@ urlpatterns = [
     path('post/<slug:slug>/json/', views.blog_post_json, name='blog_post_json'),
     path('post/<slug:slug>/like/', views.like_post, name='like_post'),
     path('post/<slug:slug>/dislike/', views.dislike_post, name='dislike_post'),
+    path('post/<slug:slug>/share/', views.share_post, name='share_post'),
     path('health/', health_check, name='health_check'),
 ]

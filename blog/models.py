@@ -161,3 +161,31 @@ class Dislike(models.Model):
 
     def __str__(self):
         return f'Dislike on {self.blog_post.title}'
+
+
+class Share(models.Model):
+    PLATFORM_CHOICES = [
+        ('twitter', 'Twitter / X'),
+        ('facebook', 'Facebook'),
+        ('linkedin', 'LinkedIn'),
+        ('telegram', 'Telegram'),
+        ('whatsapp', 'WhatsApp'),
+        ('instagram', 'Instagram'),
+        ('tiktok', 'TikTok'),
+        ('copy_link', 'Copy Link'),
+        ('native', 'Native Share'),
+    ]
+
+    blog_post = models.ForeignKey(BlogPost, on_delete=models.CASCADE, related_name='shares', db_index=True)
+    platform = models.CharField(max_length=20, choices=PLATFORM_CHOICES, db_index=True)
+    visitor_id = models.CharField(max_length=36, db_index=True, default='00000000-0000-0000-0000-000000000000')
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['blog_post', 'platform']),
+            models.Index(fields=['-created_at']),
+        ]
+
+    def __str__(self):
+        return f'{self.get_platform_display()} share on {self.blog_post.title}'
