@@ -1,91 +1,127 @@
 {% extends 'wrapper.html' %}
-{% block title %}{{ post.title }} · My Logo{% endblock %}
+{% block title %}{{ post.title }} · {{ site_name|default:'Gayrat Xoldarov' }}{% endblock %}
 {% block extra_head %}
-  {% if post %}
-      <meta name="description" content="{{ meta_description }}">
-      <meta property="og:title" content="{{ post.title }}">
-      <meta property="og:description" content="{{ meta_description }}">
-      <meta property="og:type" content="article">
-      {% if meta_image %}<meta property="og:image" content="{{ meta_image }}">{% endif %}
-      <meta name="twitter:card" content="summary_large_image">
-      <link rel="canonical" href="{{ canonical }}">
-      <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Article",
-        "headline": "{{ post.title }}",
-        "description": "{{ meta_description }}",
-        "datePublished": "{{ post.published_date|date:"Y-m-d" }}",
-        "image": {% if meta_image %}"{{ meta_image }}"{% else %}null{% endif %},
-        "author": { "@type": "Person", "name": "My Logo" },
-        "mainEntityOfPage": { "@type": "WebPage", "@id": "{{ canonical }}" }
-      }
-      </script>
-  {% endif %}
+{% if post %}
+<!-- SEO Meta Tags -->
+<meta name="description" content="{{ meta_description }}">
+<meta name="keywords" content="{% for tag in post.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}">
+<meta name="author" content="{{ site_name|default:'Gayrat Xoldarov' }}">
+<link rel="canonical" href="{{ canonical }}">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="article">
+<meta property="og:url" content="{{ canonical }}">
+<meta property="og:title" content="{{ post.title }}">
+<meta property="og:description" content="{{ meta_description }}">
+{% if meta_image %}<meta property="og:image" content="{{ meta_image }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{ post.title }}">{% endif %}
+<meta property="og:site_name" content="{{ site_name|default:'My Blog' }}">
+<meta property="article:published_time" content="{{ post.published_date|date:'c' }}">
+<meta property="article:modified_time" content="{{ post.published_date|date:'c' }}">
+<meta property="article:author" content="{{ site_name|default:'Gayrat Xoldarov' }}">
+<meta property="article:section" content="{{ post.category.name }}">
+{% for tag in post.tags.all %}<meta property="article:tag" content="{{ tag.name }}">
+{% endfor %}
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="{{ canonical }}">
+<meta name="twitter:title" content="{{ post.title }}">
+<meta name="twitter:description" content="{{ meta_description }}">
+{% if meta_image %}<meta name="twitter:image" content="{{ meta_image }}">
+<meta name="twitter:image:alt" content="{{ post.title }}">{% endif %}
+
+<!-- Additional SEO Tags -->
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="googlebot" content="index, follow">
+<meta name="language" content="English">
+<meta name="revisit-after" content="7 days">
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">{{ article_schema|safe }}</script>
+<script type="application/ld+json">{{ breadcrumb_schema|safe }}</script>
+{% endif %}
 {% endblock %}
 
 {% block content %}
 {% load static %}
-  <div class="reading-progress" id="readingProgress"></div>
-  <main class="max-w-4xl mx-auto px-2" >
-    <article class="max-w-3xl mx-auto py-20">
-    <article class="max-w-3xl mx-auto py-20">
-      {% if post %}
-        <header class="mb-6">
-          <h1 class="text-3xl font-bold">{{ post.title }}</h1>
-          <div class="mt-2 text-sm text-slate-500">{{ post.published_date|date:"F j, Y" }} • {{ post.category.name }} • {{ post.view_count }} views</div>
-        </header>
-        {% if post.banner %}
-          <figure class="mb-6"><img src="{{ post.banner.url }}" alt="{{ post.title }} banner" class="w-full rounded-lg" loading="lazy" decoding="async"/></figure>
-        {% endif %}
+<div class="reading-progress" id="readingProgress"></div>
+<main class="max-w-4xl mx-auto px-4 sm:px-6 pt-24 lg:pt-32 pb-12 lg:px-8">
+  <article class="max-w-3xl mx-auto">
+    {% if post %}
+    <header class="mb-8 lg:mb-12">
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-4 sm:mb-6">
+        {{ post.title }}
+      </h1>
+      <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-sm text-slate-500 font-medium">
+        <span>{{ post.published_date|date:"F j, Y" }}</span>
+        <span class="w-1 h-1 rounded-full bg-slate-300 hidden sm:block"></span>
+        <span class="text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full">{{ post.category.name }}</span>
+        <span class="w-1 h-1 rounded-full bg-slate-300 hidden sm:block"></span>
+        <span class="flex items-center gap-1"><i class="bi bi-eye"></i> {{ post.view_count }} views</span>
+      </div>
+    </header>
+    {% if post.banner %}
+    <figure class="mb-6"><img src="{{ post.banner.url }}" alt="{{ post.title }} banner" class="w-full rounded-lg"
+        loading="lazy" decoding="async" /></figure>
+    {% endif %}
 
-        <div class="prose max-w-none">{{ post.content|safe }}</div>
+    <div class="prose max-w-none">{{ post.content|safe }}</div>
 
-        <div class="mt-6 flex items-center space-x-4">
-          <button type="button" id="likeBtn" data-slug="{{ post.slug }}" class="btn {% if user_liked %}btn-primary{% else %}btn-outline-primary{% endif %}">
-            <span class="like-icon">👍</span> Like <span id="likeCount">({{ likes_count }})</span>
-          </button>
-          <button type="button" id="dislikeBtn" data-slug="{{ post.slug }}" class="btn {% if user_disliked %}btn-danger{% else %}btn-outline-danger{% endif %}">
-            <span class="dislike-icon">👎</span> Dislike <span id="dislikeCount">({{ dislikes_count }})</span>
-          </button>
+    <div class="mt-6 flex items-center space-x-4">
+      <button type="button" id="likeBtn" data-slug="{{ post.slug }}"
+        class="btn {% if user_liked %}btn-primary{% else %}btn-outline-primary{% endif %}">
+        <span class="like-icon">👍</span> Like <span id="likeCount">({{ likes_count }})</span>
+      </button>
+      <button type="button" id="dislikeBtn" data-slug="{{ post.slug }}"
+        class="btn {% if user_disliked %}btn-danger{% else %}btn-outline-danger{% endif %}">
+        <span class="dislike-icon">👎</span> Dislike <span id="dislikeCount">({{ dislikes_count }})</span>
+      </button>
+    </div>
+
+    <section id="comments" class="mt-12">
+      <h2 class="text-lg font-semibold">Kommentlar</h2>
+      <form method="post" class="mb-6">
+        {% csrf_token %}
+        <div class="mb-4">
+          <input type="text" name="first_name" class="w-full p-2 border rounded" placeholder="Ism" required>
         </div>
-
-        <section id="comments" class="mt-12">
-          <h2 class="text-lg font-semibold">Comments</h2>
-          <form method="post" class="mb-6">
-            {% csrf_token %}
-            <div class="mb-4">
-              <input type="text" name="first_name" class="w-full p-2 border rounded" placeholder="First Name" required>
-            </div>
-            <div class="mb-4">
-              <input type="text" name="last_name" class="w-full p-2 border rounded" placeholder="Last Name" required>
-            </div>
-            <textarea name="content" rows="4" class="w-full p-2 border rounded" placeholder="Add a comment..." required></textarea>
-            <button type="submit" class="mt-2 btn btn-primary">Post Comment</button>
-          </form>
-          {% if comments %}
-            <ul>
-              {% for c in comments %}
-                <li class="py-4 border-b flex items-start space-x-3">
-                  <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ c.ip_address }}" alt="Avatar" class="w-10 h-10 rounded-full">
-                  <div>
-                    <strong>{{ c.first_name }} {{ c.last_name }}</strong> <span class="text-xs text-slate-500">• {{ c.created_at|date:"F j, Y H:i" }}</span>
-                    <p class="mt-2">{{ c.content|linebreaksbr }}</p>
-                  </div>
-                </li>
-              {% endfor %}
-            </ul>
-          {% else %}
-            <p class="text-slate-500">No comments yet.</p>
-          {% endif %}
-        </section>
-
+        <div class="mb-4">
+          <input type="text" name="last_name" class="w-full p-2 border rounded" placeholder="Familiya" required>
+        </div>
+        <textarea name="content" rows="4" class="w-full p-2 border rounded" placeholder="Kommentingizni yozing..."
+          required></textarea>
+        <button type="submit" class="mt-2 btn btn-primary">Komment qo'shish</button>
+      </form>
+      {% if comments %}
+      <ul>
+        {% for c in comments %}
+        <li class="py-4 border-b flex items-start space-x-3">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ c.ip_address }}" alt="Avatar"
+            class="w-10 h-10 rounded-full">
+          <div>
+            <strong>{{ c.first_name }} {{ c.last_name }}</strong>
+            <span class="text-xs text-slate-500">
+              • {{ c.created_at|date:"F j, Y H:i" }}
+            </span>
+            <p class="mt-2">{{ c.content|linebreaksbr }}</p>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
       {% else %}
-        <div id="articleContainer"></div>
+      <p class="text-slate-500">No comments yet.</p>
       {% endif %}
-    </article>
-  </main>
+    </section>
 
-  <script type="module" src="{% static 'js/blog-detail.js' %}" defer></script>
-  <script src="{% static 'js/engagement.js' %}" defer></script>
+    {% else %}
+    <div id="articleContainer"></div>
+    {% endif %}
+  </article>
+</main>
+
+<script type="module" src="{% static 'js/blog-detail.js' %}?v=3" defer></script>
+<script src="{% static 'js/engagement.js' %}?v=2" defer></script>
 {% endblock %}

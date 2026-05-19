@@ -5,28 +5,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Modern blog platform delivering quality content on technology, business, design, and lifestyle">
-    <meta name="keywords" content="blog, technology, business, design, lifestyle">
-    <meta name="author" content="{{ site_name|default:'My Logo' }}">
-    <title>{% block title %}My Logo - Modern Blog | Latest Articles & Insights{% endblock %}</title>
-    {% block extra_head %}{% endblock %}
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Texnologiya, biznes, dizayn va Ilm-Fan bo'yicha sifatli kontent taqdim etuvchi zamonaviy blog platformasi">
+    <meta name="keywords" content="blog, texnologiya, bizness, dizayn, ilm-fan, articles, insights">
+    <meta name="author" content="{{ site_name|default:'Gayrat Xoldarov' }}">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="googlebot" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ site_name|default:'Gayrat Xoldarov' }}">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <title>{% block title %}Gayrat Xoldarov - Zamonaviy Blog | Ilm-Fan & Texnologiya {% endblock title %}</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'blog.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'blog.png' %}">
+    
+    {% block extra_head %}{% endblock extra_head %}
+    
+    <!-- Preconnect to external domains for performance -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{% static 'style/main.css' %}">
     <link rel="stylesheet" href="{% static 'style/pages.css' %}">
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0P58JT7EV7"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-0P58JT7EV7');
+    </script>
+    
 </head>
 
-<body class="bg-slate-50">
+<body class="bg-slate-150">
     {% include 'components/navbar.html' %}
-    
+
     {% block content %} {% endblock content %}
 
     {% include 'components/footer.html' %}
 
-    <!-- <script src="./js/anti-devtools.js" defer></script> -->
-    <script src="{% static 'js/main.js' %}" defer></script>
-    <script type="module" src="{% static 'js/index.js' %}" defer></script>
+    <!-- <script src="{% static 'js/anti-devtools.js' %}?v=3" defer></script> -->
+    <script src="{% static 'js/main.js' %}?v=3" defer></script>
+    <script type="module" src="{% static 'js/index.js' %}?v=3" defer></script>
 </body>
 
 </html>

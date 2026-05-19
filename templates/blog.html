@@ -1,8 +1,8 @@
 {% extends 'wrapper.html' %}
 {% load static %}
-{% block title %}Articles · My Logo{% endblock %}
+{% block title %}Maqolalar · G'ayrat Xoldarov{% endblock %}
 {% block extra_head %}
-  <meta name="description" content="Explore our articles filtered by topic and tag. Discover latest posts on technology, design and more.">
+  <meta name="description" content="Mavzu va teg bo'yicha filtrlangan maqolalarimizni ko'rib chiqing. Texnologiya, dizayn va boshqa mavzular bo'yicha so'nggi postlarni kashf eting.">
   <link rel="canonical" href="{{ request.build_absolute_uri }}">
 {% endblock %}
 
@@ -12,7 +12,7 @@
     <!-- Mobile search -->
     <div class="md:hidden mb-6 scroll-reveal">
       <div class="relative">
-        <input type="text" id="searchInputMobile" placeholder="Search articles..." class="w-full px-4 py-3 pl-10 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <input type="text" id="searchInputMobile" placeholder="Qidiruv..." class="w-full px-4 py-3 pl-10 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
         <i class="bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
       </div>
     </div>
@@ -21,14 +21,14 @@
     <div class="lg:hidden mb-6 flex items-center justify-between gap-3">
       <button id="mobileFilterToggle" class="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition">
         <i class="bi bi-funnel"></i>
-        <span class="font-medium">Filters</span>
+        <span class="font-medium">Saralash</span>
         <span id="mobileFilterCount" class="hidden ml-1 px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full font-semibold">0</span>
       </button>
       
       <select id="sortSelectMobile" class="px-4 py-2.5 rounded-lg border border-slate-200 bg-white font-medium">
-        <option value="new">Newest First</option>
-        <option value="old">Oldest First</option>
-        <option value="popular">Most Popular</option>
+        <option value="new">Yangi</option>
+        <option value="old">Eski</option>
+        <option value="popular">Eng ko'p ko'rilgan</option>
       </select>
     </div>
 
@@ -41,29 +41,29 @@
       <aside class="hidden lg:block scroll-reveal">
         <div class="sidebar-filters bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
           <div class="flex items-center justify-between mb-6">
-            <h2 class="text-lg font-bold text-slate-900">Filters</h2>
-            <button id="clearAll" class="text-sm text-blue-600 hover:text-blue-700 font-medium">Clear All</button>
+            <h2 class="text-lg font-bold text-slate-900">Saralash</h2>
+            <button id="clearAll" class="text-sm text-blue-600 hover:text-blue-700 font-medium">Tozalash</button>
           </div>
 
           <!-- Categories -->
           <div class="filter-section">
-            <div class="filter-section-title">Categories</div>
+            <div class="filter-section-title">Kategoriyalar</div>
             <div id="categoryFilters" aria-live="polite"></div>
           </div>
 
           <!-- Tags -->
           <div class="filter-section">
-            <div class="filter-section-title">Popular Tags</div>
+            <div class="filter-section-title">Ommabop Teglar</div>
             <div id="tagFilters" aria-live="polite"></div>
           </div>
 
           <!-- Sort (desktop) -->
           <div class="filter-section">
-            <div class="filter-section-title">Sort By</div>
+            <div class="filter-section-title">Saralash</div>
             <select id="sortSelect" class="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white font-medium">
-              <option value="new">Newest First</option>
-              <option value="old">Oldest First</option>
-              <option value="popular">Most Popular</option>
+              <option value="new">Yangi</option>
+              <option value="old">Eski</option>
+              <option value="popular">Eng ko'p ko'rilgan</option>
             </select>
           </div>
         </div>
@@ -72,7 +72,7 @@
       <!-- Posts feed -->
       <div>
         <div class="mb-4 flex items-center justify-between">
-          <p class="text-slate-600 text-sm"><span id="resultCount">7</span> articles found</p>
+          <p class="text-slate-600 text-sm"><span id="resultCount">{{ total }}</span> ta topildi</p>
         </div>
 
         <section id="posts" class="post-feed">
@@ -94,12 +94,8 @@
                     <h3 class="post-title mt-2"><a href="{% url 'blog:blog_post_detail' post.slug %}" class="hover:underline text-slate-900">{{ post.title }}</a></h3>
                     <p class="excerpt">{{ post.excerpt }}</p>
                   </div>
-                  <div class="flex items-center justify-between mt-4">
-                    <div class="flex items-center gap-3">
-                      <div class="avatar"><img src="{{ post.avatar|default:'' }}" alt="" loading="lazy"></div>
-                      <div><div class="text-sm font-medium text-slate-700">{{ post.author|default:'Author' }}</div><div class="text-xs text-slate-500">{{ post.read|default:'' }}</div></div>
-                    </div>
-                    <a href="{% url 'blog:blog_post_detail' post.slug %}" class="inline-flex items-center gap-2 text-blue-600 font-semibold hover:gap-3 transition-all group"><span>Read</span><i class="bi bi-arrow-right group-hover:translate-x-1 transition-transform"></i></a>
+                  <div class="flex items-center justify-end mt-4">
+                    <a href="{% url 'blog:blog_post_detail' post.slug %}" class="inline-flex items-center gap-2 text-blue-600 font-semibold hover:gap-3 transition-all group"><span>O'qish</span><i class="bi bi-arrow-right group-hover:translate-x-1 transition-transform"></i></a>
                   </div>
                 </div>
               </article>
@@ -109,7 +105,7 @@
 
         <div id="noResults" class="text-center py-12 hidden scroll-reveal">
           <i class="bi bi-search text-4xl text-slate-300 mb-4"></i>
-          <p class="text-slate-500 text-lg">No articles match your filters.</p>
+          <p class="text-slate-500 text-lg">Sizning filtrlaringizga mos maqola topilmadi.</p>
         </div>
 
         <!-- Pagination -->
@@ -122,29 +118,29 @@
   <div id="filterDrawer" class="filter-drawer">
     <div class="filter-drawer-header">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-bold">Filters</h2>
+        <h2 class="text-lg font-bold">Saralash</h2>
         <button id="closeDrawer" class="text-2xl text-slate-500 hover:text-slate-700">
           <i class="bi bi-x"></i>
         </button>
       </div>
-      <button id="clearAllMobile" class="text-sm text-blue-600 hover:text-blue-700 font-medium">Clear All</button>
+      <button id="clearAllMobile" class="text-sm text-blue-600 hover:text-blue-700 font-medium">Tozalash</button>
     </div>
 
     <div class="p-6 pt-0">
       <!-- Categories (mobile) -->
       <div class="filter-section">
-        <div class="filter-section-title">Categories</div>
+        <div class="filter-section-title">Kategoriyalar</div>
         <div id="categoryFiltersMobile" aria-live="polite"></div>
       </div>
 
       <!-- Tags (mobile) -->
       <div class="filter-section">
-        <div class="filter-section-title">Popular Tags</div>
+        <div class="filter-section-title">Ommabop Teglar</div>
         <div id="tagFiltersMobile" aria-live="polite"></div>
       </div>
 
       <button id="applyFilters" class="w-full mt-6 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg font-semibold hover:shadow-lg transition">
-        Apply Filters
+        <span>Natijalarni ko'rsatish</span>
       </button>
     </div>
   </div>
@@ -160,5 +156,5 @@
     window.currentPage = {{ page }};
     window.totalPages = {{ total_pages }};
   </script>
-  <script type="module" src="{% static 'js/blog.js' %}" defer></script>
+  <script type="module" src="{% static 'js/blog.js' %}?v=3" defer></script>
 {% endblock %}

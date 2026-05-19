@@ -1,17 +1,18 @@
+{% load static %}
 <nav class="navbar fixed top-0 w-full z-50 bg-white border-b border-slate-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
             <a href="/" class="flex items-center space-x-2">
                 <div
-                    class="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-600">
-                    <i class="bi bi-grid-3x3-gap-fill text-white"></i>
+                    class="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br">
+                    <img src="{% static 'blog.png' %}" alt="Logo" class="w-8 h-8">
                 </div>
-                <span class="text-xl font-bold text-slate-800">MY LOGO</span>
+                <span class="text-xl font-bold text-slate-800">G'ayrat Xoldarov</span>
             </a>
 
             <div class="hidden md:flex flex-1 max-w-md mx-8">
                 <div class="relative w-full">
-                    <input id="searchInputTop" type="text" placeholder="Search articles..."
+                    <input id="searchInputTop" type="text" placeholder="Qidiruv ..."
                         class="w-full px-4 py-2 pl-10 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     <i class="bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
 
@@ -31,21 +32,10 @@
 
     <div id="mobileMenu" class="mobile-menu lg:hidden" role="menu" aria-hidden="true">
         <div class="flex flex-col space-y-3">
-            <a href="{% url 'home:home_page' %}" class="text-slate-700 hover:text-blue-600 text-lg font-medium py-2">Home</a>
+            <a href="{% url 'home:home_page' %}" class="text-slate-700 hover:text-blue-600 text-lg font-medium py-2">Asosiy</a>
             <a href="{% url 'blog:blog_page' %}" class="text-slate-700 hover:text-blue-600 text-lg font-medium py-2">Blog</a>
-            <a href="{% url 'about:about_page' %}" class="text-slate-700 hover:text-blue-600 text-lg font-medium py-2">About</a>
-            <a href="#footer" class="text-slate-700 hover:text-blue-600 text-lg font-medium py-2">Contact</a>
-            <div class="pt-2 border-t border-slate-100 mt-2">
-                <div class="mb-3">
-                    <label for="langSelectMobile" class="sr-only">Language</label>
-                    <select id="langSelectMobile"
-                        class="w-full rounded-lg border border-slate-200 px-3 py-2 bg-white text-sm">
-                        <option value="en">EN</option>
-                        <option value="es">ES</option>
-                        <option value="fr">FR</option>
-                    </select>
-                </div>
-            </div>
+            <!-- <a href="{% url 'about:about_page' %}" class="text-slate-700 hover:text-blue-600 text-lg font-medium py-2">Biz Haqimizda</a> -->
+            <a href="#footer" class="text-slate-700 hover:text-blue-600 text-lg font-medium py-2">Aloqa</a>
         </div>
     </div>
 

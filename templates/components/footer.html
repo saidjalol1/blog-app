@@ -1,70 +1,72 @@
 <!-- Footer -->
+{% load static %}
 <footer id="footer" class="bg-slate-900 text-white pt-16 pb-8 px-4">
     <div class="max-w-7xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
             <div>
                 <div class="flex items-center space-x-2 mb-6">
                     <div
-                        class="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-600">
-                        <i class="bi bi-grid-3x3-gap-fill text-white"></i>
+                        class="w-12 h-12 rounded-lg flex items-center justify-center bg-white px-1 py-1 flex-shrink-0">
+                        <img  src="{% static 'blog.png' %}" alt="Logo" class="w-8 h-8">
                     </div>
-                    <span class="text-xl font-bold">MY LOGO</span>
+                    <span class="text-xl font-bold text-white">G'ayrat Xoldarov</span>
                 </div>
-                <p class="text-slate-400 mb-8">A modern blog platform delivering quality content on technology,
-                    business, design, and lifestyle.</p>
+                <p class="text-slate-400 mb-8">
+                    Texnologiya, biznes, dizayn va Ilm-Fan bo'yicha sifatli kontent taqdim etuvchi zamonaviy blog platformasi.
+                </p>
                 <div class="flex space-x-4">
-                    <a href="#"
+                    <a href="https://t.me/gayrat_xoldarov" target="_blank"
                         class="w-10 h-10 bg-slate-800 hover:bg-blue-700 rounded-lg flex items-center justify-center transition">
 
                         <i class="bi bi-telegram"></i>
                     </a>
-                    <a href="#"
+                    <a href="https://www.instagram.com/gayratxoldarov" target="_blank"
                         class="w-10 h-10 bg-slate-800 hover:bg-pink-600 rounded-lg flex items-center justify-center transition">
                         <i class="bi bi-instagram"></i>
                     </a>
-                    <a href="#"
+                    <a href="https://youtube.com/@gayrat_xoldarov" target="_blank"
                         class="w-10 h-10 bg-slate-800 hover:bg-blue-800 rounded-lg flex items-center justify-center transition">
-                        <i class="bi bi-linkedin"></i>
+                        <i class="bi bi-youtube"></i>
                     </a>
                 </div>
             </div>
 
             <div>
-                <h3 class="text-lg font-bold mb-6">Contact Us</h3>
+                <h3 class="text-lg font-bold mb-6">Bog'lanish</h3>
                 <ul class="space-y-4">
                     <li class="flex items-center text-slate-400">
                         <i class="bi bi-envelope mr-3"></i>
-                        <span>info@mylogo.com</span>
+                        <span>gayratxoldarovv@gmail.com</span>
                     </li>
                     <li class="flex items-center text-slate-400">
                         <i class="bi bi-telephone mr-3"></i>
-                        <span>+1 (555) 123-4567</span>
+                        <span>+998 (99) 358-49-09</span>
                     </li>
                     <li class="flex items-start text-slate-400">
                         <i class="bi bi-geo-alt mr-3 mt-1"></i>
-                        <span>123 Innovation Street<br>San Francisco, CA 94107</span>
+                        <span>Andijon shahar, O'zbekiston</span>
                     </li>
                 </ul>
             </div>
 
             <div>
-                <h3 class="text-lg font-bold mb-6">Quick Links</h3>
+                <h3 class="text-lg font-bold mb-6">Tezkor Linklar</h3>
                 <ul class="space-y-4">
-                    <li><a href="{% url 'home:home_page' %}" class="text-slate-400 hover:text-white transition">Home</a></li>
-                    <li><a href="{% url 'blog:blog_page' %}" class="text-slate-400 hover:text-white transition">Articles</a></li>
-                    <li><a href="#cats" class="text-slate-400 hover:text-white transition">Categories</a></li>
-                    <li><a href="{% url 'about:about_page' %}" class="text-slate-400 hover:text-white transition">About Us</a></li>
+                    <li><a href="{% url 'home:home_page' %}" class="text-slate-400 hover:text-white transition">Asosiy</a></li>
+                    <li><a href="{% url 'blog:blog_page' %}" class="text-slate-400 hover:text-white transition">Maqolalar</a></li>
+                    <li><a href="#cats" class="text-slate-400 hover:text-white transition">Kategoriyalar</a></li>
+                    <!-- <li><a href="{% url 'about:about_page' %}" class="text-slate-400 hover:text-white transition">Biz Haqimizda</a></li> -->
                 </ul>
             </div>
 
             <div>
-                <h3 class="text-lg font-bold mb-6">Top Categories</h3>
+                <h3 class="text-lg font-bold mb-6">Kategoriyalar</h3>
                 <ul class="space-y-4">
-                    <li><a href="{% url 'blog:blog_page' %}?categories=Technology" class="text-slate-400 hover:text-white transition">Technology</a></li>
-                    <li><a href="{% url 'blog:blog_page' %}?categories=Business" class="text-slate-400 hover:text-white transition">Business</a></li>
-                    <li><a href="{% url 'blog:blog_page' %}?categories=Design" class="text-slate-400 hover:text-white transition">Design</a></li>
-                    <li><a href="{% url 'blog:blog_page' %}?categories=Health" class="text-slate-400 hover:text-white transition">Health</a></li>
-                    <li><a href="{% url 'blog:blog_page' %}?categories=Travel" class="text-slate-400 hover:text-white transition">Travel</a></li>
+                    <li><a href="{% url 'blog:blog_page' %}?categories=Technology" class="text-slate-400 hover:text-white transition">Texnologiya</a></li>
+                    <li><a href="{% url 'blog:blog_page' %}?categories=Business" class="text-slate-400 hover:text-white transition">Biznes</a></li>
+                    <li><a href="{% url 'blog:blog_page' %}?categories=Design" class="text-slate-400 hover:text-white transition">Dizayn</a></li>
+                    <li><a href="{% url 'blog:blog_page' %}?categories=Health" class="text-slate-400 hover:text-white transition">Sog'liq</a></li>
+                    <li><a href="{% url 'blog:blog_page' %}?categories=Travel" class="text-slate-400 hover:text-white transition">Sayohat</a></li>
                 </ul>
             </div>
 

@@ -33,7 +33,6 @@ class BlogPost(models.Model):
 
     def save(self, *args, **kwargs):
         from django.utils.text import slugify
-        from django.core.cache import cache
         
         if not self.slug:
             base = slugify(self.title)[:200]
@@ -45,9 +44,6 @@ class BlogPost(models.Model):
             self.slug = slug
         
         super().save(*args, **kwargs)
-        
-        # Invalidate blog caches when post is created/updated
-        cache.delete('blog:filters')
 
     class Meta:
         ordering = ['-published_date']
@@ -61,6 +57,54 @@ class BlogPost(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def excerpt(self):
+        from django.utils.html import strip_tags
+        text = strip_tags(self.content)
+        if len(text) <= 140:
+            return text
+        return text[:140].rsplit(' ', 1)[0] + '…'
+    
+    def seo_score(self):
+        """Calculate SEO health score for this post (0-100)."""
+        score = 100
+        
+        # Title length check (optimal: 30-60 chars)
+        if len(self.title) > 60:
+            score -= 10
+        elif len(self.title) < 30:
+            score -= 15
+        
+        # Category check
+        if not self.category:
+            score -= 15
+        
+        # Tags check
+        tag_count = self.tags.count()
+        if tag_count == 0:
+            score -= 20
+        elif tag_count < 3:
+            score -= 10
+        
+        # Content length check (minimum 300 words)
+        from django.utils.html import strip_tags
+        content_text = strip_tags(self.content)
+        word_count = len(content_text.split())
+        if word_count < 300:
+            score -= 20
+        elif word_count < 500:
+            score -= 10
+        
+        # Banner image check
+        if not self.banner:
+            score -= 15
+        
+        # Slug check
+        if not self.slug or len(self.slug) < 3:
+            score -= 10
+        
+        return max(0, score)
 
 
 class Comment(models.Model):

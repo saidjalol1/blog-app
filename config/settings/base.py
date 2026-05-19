@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-%xefw+w5_ldq1$u5+9n-$m^=5p3(()zwwcvn^u+i*xg8&gqavh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["gayratxoldarov.uz","www.gayratxoldarov.uz"]
 
 
 # Auth settings
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',  # SEO: Sitemap support
     
     # My apps
     "home.apps.HomeConfig",
@@ -101,6 +102,34 @@ MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
+# Content Security Policy (CSP) Configuration
+# Allow CDN resources used in templates (Tailwind, Bootstrap Icons, Google Fonts)
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = (
+    "'self'",
+    "'unsafe-inline'",
+    "cdn.tailwindcss.com",
+    "cdn.jsdelivr.net",
+)
+CSP_STYLE_SRC = (
+    "'self'",
+    "'unsafe-inline'",
+    "cdn.jsdelivr.net",
+    "fonts.googleapis.com",
+)
+CSP_FONT_SRC = (
+    "'self'",
+    "cdn.jsdelivr.net",
+    "fonts.gstatic.com",
+)
+CSP_IMG_SRC = (
+    "'self'",
+    "data:",
+    "https:",
+)
+CSP_CONNECT_SRC = ("'self'",)
+
+
 
 try:
     import whitenoise 
@@ -124,6 +153,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'blog.context_processors.seo_settings',  # SEO settings in all templates
             ],
         },
     },
@@ -142,24 +172,6 @@ DATABASES = {
     }
 }
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        },
-        "KEY_PREFIX": "blog",
-        "TIMEOUT": 300,  # Default TTL: 5 minutes
-    }
-}
-
-# Cache TTL values (in seconds)
-CACHE_TTL = {
-    'blog_list': 300,  # 5 minutes
-    'filters': 900,  # 15 minutes
-    'post_detail': 300,  # 5 minutes
-}
 
 # Pagination settings
 BLOG_POSTS_PER_PAGE = 50  # Default pagination size for blog list
@@ -300,3 +312,17 @@ LOGGING = {
 
 # Slow query logging threshold (in seconds)
 SLOW_QUERY_THRESHOLD = 0.1  # 100ms
+
+# SEO Configuration
+SITE_NAME = 'Gayrat Xoldarov'
+SITE_URL = 'https://www.gayratxoldarov.uz'  # Update with your actual domain
+SITE_DESCRIPTION = "Texnologiya, biznes, dizayn va Ilm-Fan bo'yicha sifatli kontent taqdim etuvchi zamonaviy blog platformasi"
+SITE_KEYWORDS = 'blog, Texnologiya, bizness, dizayn, Ilm-fan, sayohat, AI'
+SITE_AUTHOR = 'Gayratbek Xoldarov'
+
+# Social Media (Update with your actual profiles)
+SOCIAL_MEDIA = {
+    'youtube': 'https://youtube.com/@gayrat_xoldarov',
+    'telegram': 'https://t.me/gayratbek_xoldarov',
+    'instagram': 'https://www.instagram.com/gayratxoldarov',
+}
